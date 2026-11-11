@@ -33,3 +33,4 @@ id_rsa*
 .idea/
 *.swp
 .DS_Store
+bin_tags/
