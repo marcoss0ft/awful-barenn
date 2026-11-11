@@ -29,32 +29,40 @@ class DenseLayer {
     // weights[i * in_features + j] liga a entrada j ao neurônio de saída i.
     vector<float> weights;
     vector<float> bias;
-    // Dados do último forward usados para calcular os gradientes.
-    vector<float> last_input;
+    // Buffers alocados uma única vez no construtor e reutilizados a cada amostra.
+    vector<float> out;
     vector<float> last_z;
+    vector<float> delta;
+    vector<float> grad_in;
+    // Entrada do último forward. Aponta para um vetor que continua vivo até o
+    // backward (a imagem da amostra ou a saída da camada anterior).
+    const vector<float>* last_input = nullptr;
 
 public:
     DenseLayer(int input_size, int output_size, bool is_final = false)
         : in_features(input_size), out_features(output_size), final(is_final),
-          weights(output_size * input_size), bias(output_size, 0) {
+          weights(output_size * input_size), bias(output_size, 0),
+          out(output_size), last_z(output_size), delta(output_size),
+          grad_in(input_size) {
         // A semente fixa torna a inicialização de cada camada reproduzível.
+        // A ordem de sorteio é a mesma do código legado (linha por linha).
         mt19937 gen(1337);
         uniform_real_distribution<float> distribution(-0.05f, 0.05f);
-        // A ordem de sorteio é a mesma do código legado (linha por linha).
         for (float& weight : weights) {
             weight = distribution(gen);
         }
     }
 
-    vector<float> Forward(vector<float> input) {
-        last_input = input;
-        last_z.resize(out_features);
-        vector<float> out(out_features);
+    // Recebe a entrada por referência (sem cópia) e devolve uma referência
+    // para o buffer de saída da própria camada (sem alocação).
+    const vector<float>& Forward(const vector<float>& input) {
+        last_input = &input;
         // Cada neurônio soma o viés aos produtos entre entradas e pesos.
         for (int i = 0; i < out_features; ++i) {
+            const float* w = &weights[i * in_features];
             float sum = bias[i];
             for (int j = 0; j < in_features; ++j) {
-                sum += input[j] * weights[i * in_features + j];
+                sum += input[j] * w[j];
             }
             last_z[i] = sum;
             // As camadas ocultas usam ReLU. A última devolve escores lineares.
@@ -63,17 +71,16 @@ public:
         return out;
     }
 
-    vector<float> Backward(vector<float> grad_out, float learning_rate) {
+    const vector<float>& Backward(const vector<float>& grad_out, float learning_rate) {
         // Delta é o gradiente da perda em relação à soma antes da ativação.
         // Na ReLU, o gradiente passa apenas quando essa soma é positiva.
-        vector<float> delta(out_features);
         for (int i = 0; i < out_features; ++i) {
             delta[i] = final ? grad_out[i]
                              : grad_out[i] * (last_z[i] > 0.0f ? 1.0f : 0.0f);
         }
 
         // O gradiente da entrada usa os pesos anteriores à atualização.
-        vector<float> grad_in(in_features);
+        // Mantém a mesma ordem de soma do legado para não mudar o resultado.
         for (int i = 0; i < in_features; ++i) {
             float sum = 0;
             for (int j = 0; j < out_features; ++j) {
@@ -84,9 +91,11 @@ public:
 
         // SGD por amostra. O gradiente do peso é delta vezes a entrada.
         // O gradiente do viés é o próprio delta.
+        const vector<float>& input = *last_input;
         for (int i = 0; i < out_features; ++i) {
+            float* w = &weights[i * in_features];
             for (int j = 0; j < in_features; ++j) {
-                weights[i * in_features + j] -= learning_rate * (delta[i] * last_input[j]);
+                w[j] -= learning_rate * (delta[i] * input[j]);
             }
             bias[i] -= learning_rate * delta[i];
         }
@@ -176,7 +185,7 @@ void avaliar(DenseLayer& l1, DenseLayer& l2, DenseLayer& l3,
     // Só fazemos forward aqui. Os pesos ficam fixos.
     for (size_t i = 0; i < teste.size(); ++i) {
         const auto& amostra = teste[i];
-        auto escores = l3.Forward(l2.Forward(l1.Forward(amostra.imagem)));
+        const auto& escores = l3.Forward(l2.Forward(l1.Forward(amostra.imagem)));
         // O índice do maior escore indica a classe prevista.
         int previsto = static_cast<int>(
             max_element(escores.begin(), escores.end()) - escores.begin());
@@ -279,13 +288,13 @@ int main(int argc, char** argv) {
             double perda_total = 0;
             // Uma época percorre todo o conjunto na ordem do arquivo.
             for (const auto& amostra : treino) {
-                auto escores = l3.Forward(l2.Forward(l1.Forward(amostra.imagem)));
+                const auto& escores = l3.Forward(l2.Forward(l1.Forward(amostra.imagem)));
                 perda_total += Barenn::perda(escores, amostra.rotulo, &gradiente);
 
                 // Propaga o gradiente da última camada até a primeira.
                 // Cada Backward também atualiza os parâmetros da sua camada.
-                auto grad3 = l3.Backward(gradiente, taxa);
-                auto grad2 = l2.Backward(grad3, taxa);
+                const auto& grad3 = l3.Backward(gradiente, taxa);
+                const auto& grad2 = l2.Backward(grad3, taxa);
                 l1.Backward(grad2, taxa);
             }
             perdas[epoca] = perda_total / treino.size();
