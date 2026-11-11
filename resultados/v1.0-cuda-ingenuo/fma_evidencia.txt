@@ -1,0 +1,14 @@
+# Instrucoes FMA no codigo gerado (cuobjdump -ptx gpu | grep fma.rn.f32)
+10
+ld.global.f32 %f12, [%rd33];
+ld.global.f32 %f13, [%rd32];
+fma.rn.f32 %f14, %f13, %f12, %f30;
+ld.global.f32 %f15, [%rd33+4];
+ld.global.f32 %f16, [%rd32+4];
+fma.rn.f32 %f17, %f16, %f15, %f14;
+ld.global.f32 %f18, [%rd33+8];
+ld.global.f32 %f19, [%rd32+8];
+
+# Instrucoes FMA no binario da CPU (objdump -d legado | grep -c vfmadd) e multiplicacoes escalares (mulss)
+0
+320
