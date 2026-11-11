@@ -1,0 +1,78 @@
+compute22
+Model name:                           Intel(R) Core(TM) i9-14900
+Cpus_allowed_list:	0,2,4,6,8,10,12,14
+== Validacao com 8 threads ==
+VALIDACAO OK: saida identica a ./legado (exceto linhas de tempo)
+VALIDACAO OK: saida identica a ./legado (exceto linhas de tempo)
+================ ./cpu, 1 thread(s) ================
+Tempo de treino 0.1834 s Tempo de leitura 0.0194 s Tempo de avaliacao 0.0009 s 
+Tempo de treino 0.1832 s Tempo de leitura 0.0193 s Tempo de avaliacao 0.0009 s 
+Tempo de treino 0.1828 s Tempo de leitura 0.0194 s Tempo de avaliacao 0.0009 s 
+Tempo de treino 0.1826 s Tempo de leitura 0.0193 s Tempo de avaliacao 0.0009 s 
+Tempo de treino 0.1836 s Tempo de leitura 0.0195 s Tempo de avaliacao 0.0009 s 
+Tempo de treino 0.1827 s Tempo de leitura 0.0188 s Tempo de avaliacao 0.0009 s 
+Tempo de treino 0.1834 s Tempo de leitura 0.0194 s Tempo de avaliacao 0.0009 s 
+Tempo de treino 0.1829 s Tempo de leitura 0.0194 s Tempo de avaliacao 0.0009 s 
+Tempo de treino 0.1830 s Tempo de leitura 0.0194 s Tempo de avaliacao 0.0009 s 
+Tempo de treino 0.1834 s Tempo de leitura 0.0192 s Tempo de avaliacao 0.0009 s 
+MEDIA treino 0.1839 s (desvio 0.0005) | total 0.2085 s (desvio 0.0010)
+================ ./cpu, 2 thread(s) ================
+Tempo de treino 0.1877 s Tempo de leitura 0.0127 s Tempo de avaliacao 0.0008 s 
+Tempo de treino 0.1843 s Tempo de leitura 0.0105 s Tempo de avaliacao 0.0007 s 
+Tempo de treino 0.1839 s Tempo de leitura 0.0105 s Tempo de avaliacao 0.0006 s 
+Tempo de treino 0.1836 s Tempo de leitura 0.0106 s Tempo de avaliacao 0.0007 s 
+Tempo de treino 0.1855 s Tempo de leitura 0.0129 s Tempo de avaliacao 0.0007 s 
+Tempo de treino 0.1872 s Tempo de leitura 0.0128 s Tempo de avaliacao 0.0007 s 
+Tempo de treino 0.1879 s Tempo de leitura 0.0126 s Tempo de avaliacao 0.0006 s 
+Tempo de treino 0.1880 s Tempo de leitura 0.0126 s Tempo de avaliacao 0.0006 s 
+Tempo de treino 0.1868 s Tempo de leitura 0.0128 s Tempo de avaliacao 0.0007 s 
+Tempo de treino 0.1888 s Tempo de leitura 0.0126 s Tempo de avaliacao 0.0006 s 
+MEDIA treino 0.1864 s (desvio 0.0037) | total 0.2041 s (desvio 0.0044)
+================ ./cpu, 4 thread(s) ================
+Tempo de treino 0.1949 s Tempo de leitura 0.0069 s Tempo de avaliacao 0.0005 s 
+Tempo de treino 0.1915 s Tempo de leitura 0.0068 s Tempo de avaliacao 0.0005 s 
+Tempo de treino 0.1841 s Tempo de leitura 0.0071 s Tempo de avaliacao 0.0005 s 
+Tempo de treino 0.1829 s Tempo de leitura 0.0067 s Tempo de avaliacao 0.0005 s 
+Tempo de treino 0.1847 s Tempo de leitura 0.0069 s Tempo de avaliacao 0.0005 s 
+Tempo de treino 0.1846 s Tempo de leitura 0.0067 s Tempo de avaliacao 0.0005 s 
+Tempo de treino 0.1835 s Tempo de leitura 0.0068 s Tempo de avaliacao 0.0005 s 
+Tempo de treino 0.1843 s Tempo de leitura 0.0068 s Tempo de avaliacao 0.0005 s 
+Tempo de treino 0.1881 s Tempo de leitura 0.0068 s Tempo de avaliacao 0.0005 s 
+Tempo de treino 0.1879 s Tempo de leitura 0.0067 s Tempo de avaliacao 0.0005 s 
+MEDIA treino 0.1851 s (desvio 0.0010) | total 0.1966 s (desvio 0.0015)
+================ ./cpu, 8 thread(s) ================
+Tempo de treino 0.1849 s Tempo de leitura 0.0042 s Tempo de avaliacao 0.0004 s 
+Tempo de treino 0.1847 s Tempo de leitura 0.0041 s Tempo de avaliacao 0.0004 s 
+Tempo de treino 0.1843 s Tempo de leitura 0.0039 s Tempo de avaliacao 0.0004 s 
+Tempo de treino 0.1844 s Tempo de leitura 0.0040 s Tempo de avaliacao 0.0004 s 
+Tempo de treino 0.1845 s Tempo de leitura 0.0042 s Tempo de avaliacao 0.0004 s 
+Tempo de treino 0.1868 s Tempo de leitura 0.0043 s Tempo de avaliacao 0.0004 s 
+Tempo de treino 0.1840 s Tempo de leitura 0.0042 s Tempo de avaliacao 0.0004 s 
+Tempo de treino 0.1845 s Tempo de leitura 0.0040 s Tempo de avaliacao 0.0004 s 
+Tempo de treino 0.1852 s Tempo de leitura 0.0043 s Tempo de avaliacao 0.0004 s 
+Tempo de treino 0.1841 s Tempo de leitura 0.0042 s Tempo de avaliacao 0.0004 s 
+MEDIA treino 0.1857 s (desvio 0.0020) | total 0.1943 s (desvio 0.0021)
+================ ./omp_no_treino, 1 thread(s) ================
+Binario: ./omp_no_treino | repeticoes: 3 | host: compute22
+rodada 1 | treino 0.4147 s | total 0.4397 s
+rodada 2 | treino 0.4252 s | total 0.4505 s
+rodada 3 | treino 0.4160 s | total 0.4469 s
+MEDIA treino 0.4186 s (desvio 0.0057) | total 0.4457 s (desvio 0.0055)
+================ ./omp_no_treino, 2 thread(s) ================
+Binario: ./omp_no_treino | repeticoes: 3 | host: compute22
+rodada 1 | treino 4.4653 s | total 4.5028 s
+rodada 2 | treino 4.3967 s | total 4.4352 s
+rodada 3 | treino 4.2663 s | total 4.3060 s
+MEDIA treino 4.3761 s (desvio 0.1011) | total 4.4147 s (desvio 0.1000)
+================ ./omp_no_treino, 4 thread(s) ================
+Binario: ./omp_no_treino | repeticoes: 3 | host: compute22
+rodada 1 | treino 5.8129 s | total 5.8607 s
+rodada 2 | treino 5.6623 s | total 5.7049 s
+rodada 3 | treino 5.6468 s | total 5.6888 s
+MEDIA treino 5.7073 s (desvio 0.0918) | total 5.7515 s (desvio 0.0949)
+================ ./omp_no_treino, 8 thread(s) ================
+Binario: ./omp_no_treino | repeticoes: 3 | host: compute22
+rodada 1 | treino 7.2381 s | total 7.2946 s
+rodada 2 | treino 7.2913 s | total 7.3385 s
+rodada 3 | treino 7.3098 s | total 7.3587 s
+MEDIA treino 7.2797 s (desvio 0.0372) | total 7.3306 s (desvio 0.0327)
