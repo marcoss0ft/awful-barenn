@@ -88,76 +88,60 @@ class DenseLayer {
     int in_features;
     int out_features;
     bool final;
-    // Versão ingênua: a cópia oficial dos parâmetros fica na CPU e vai para a
-    // GPU (e volta) a cada chamada de Forward/Backward.
-    vector<float> weights;
-    vector<float> bias;
-    vector<float> out;
-    vector<float> last_z;
-    vector<float> grad_in;
-    const vector<float>* last_input = nullptr;
+    // Parâmetros e buffers ficam na GPU durante todo o programa: são alocados
+    // uma única vez no construtor e liberados no destrutor.
+    float* d_w = nullptr;
+    float* d_b = nullptr;
+    float* d_out = nullptr;
+    float* d_z = nullptr;
+    float* d_delta = nullptr;
+    float* d_grad_in = nullptr;
+    // Entrada do último forward (memória da GPU).
+    const float* d_last_input = nullptr;
 
 public:
     DenseLayer(int input_size, int output_size, bool is_final = false)
-        : in_features(input_size), out_features(output_size), final(is_final),
-          weights(output_size * input_size), bias(output_size, 0),
-          out(output_size), last_z(output_size), grad_in(input_size) {
-        // Mesma inicialização do código legado.
+        : in_features(input_size), out_features(output_size), final(is_final) {
+        // Mesma inicialização do código legado, feita na CPU e enviada uma vez.
+        vector<float> weights(output_size * input_size);
+        vector<float> bias(output_size, 0);
         mt19937 gen(1337);
         uniform_real_distribution<float> distribution(-0.05f, 0.05f);
         for (float& weight : weights) {
             weight = distribution(gen);
         }
+        checar(cudaMalloc(&d_w, weights.size() * sizeof(float)));
+        checar(cudaMalloc(&d_b, out_features * sizeof(float)));
+        checar(cudaMalloc(&d_out, out_features * sizeof(float)));
+        checar(cudaMalloc(&d_z, out_features * sizeof(float)));
+        checar(cudaMalloc(&d_delta, out_features * sizeof(float)));
+        checar(cudaMalloc(&d_grad_in, in_features * sizeof(float)));
+        checar(cudaMemcpy(d_w, weights.data(), weights.size() * sizeof(float),
+                          cudaMemcpyHostToDevice));
+        checar(cudaMemcpy(d_b, bias.data(), out_features * sizeof(float),
+                          cudaMemcpyHostToDevice));
     }
 
-    const vector<float>& Forward(const vector<float>& input) {
-        last_input = &input;
-        size_t b_in = in_features * sizeof(float);
-        size_t b_out = out_features * sizeof(float);
-        size_t b_w = weights.size() * sizeof(float);
+    ~DenseLayer() {
+        cudaFree(d_w); cudaFree(d_b); cudaFree(d_out);
+        cudaFree(d_z); cudaFree(d_delta); cudaFree(d_grad_in);
+    }
+    // A camada é dona da memória da GPU: não pode ser copiada.
+    DenseLayer(const DenseLayer&) = delete;
+    DenseLayer& operator=(const DenseLayer&) = delete;
 
-        // Aloca e copia tudo o que o kernel precisa (CPU -> GPU).
-        float *d_in, *d_w, *d_b, *d_out, *d_z;
-        checar(cudaMalloc(&d_in, b_in));
-        checar(cudaMalloc(&d_w, b_w));
-        checar(cudaMalloc(&d_b, b_out));
-        checar(cudaMalloc(&d_out, b_out));
-        checar(cudaMalloc(&d_z, b_out));
-        checar(cudaMemcpy(d_in, input.data(), b_in, cudaMemcpyHostToDevice));
-        checar(cudaMemcpy(d_w, weights.data(), b_w, cudaMemcpyHostToDevice));
-        checar(cudaMemcpy(d_b, bias.data(), b_out, cudaMemcpyHostToDevice));
-
+    // Recebe e devolve ponteiros da GPU: a saída de uma camada vai direto para
+    // a próxima, sem passar pela CPU.
+    const float* Forward(const float* d_input) {
+        d_last_input = d_input;
         forward_kernel<<<grade(out_features), BLOCO>>>(
-            d_in, d_w, d_b, in_features, out_features, final, d_out, d_z);
+            d_input, d_w, d_b, in_features, out_features, final, d_out, d_z);
         checar(cudaGetLastError());
-
-        // A cópia GPU -> CPU espera o kernel terminar.
-        checar(cudaMemcpy(out.data(), d_out, b_out, cudaMemcpyDeviceToHost));
-        checar(cudaMemcpy(last_z.data(), d_z, b_out, cudaMemcpyDeviceToHost));
-        cudaFree(d_in); cudaFree(d_w); cudaFree(d_b); cudaFree(d_out); cudaFree(d_z);
-        return out;
+        return d_out;
     }
 
-    const vector<float>& Backward(const vector<float>& grad_out, float learning_rate,
-                                  bool calcular_grad_in = true) {
-        size_t b_in = in_features * sizeof(float);
-        size_t b_out = out_features * sizeof(float);
-        size_t b_w = weights.size() * sizeof(float);
-
-        float *d_grad_out, *d_z, *d_delta, *d_w, *d_b, *d_in, *d_grad_in;
-        checar(cudaMalloc(&d_grad_out, b_out));
-        checar(cudaMalloc(&d_z, b_out));
-        checar(cudaMalloc(&d_delta, b_out));
-        checar(cudaMalloc(&d_w, b_w));
-        checar(cudaMalloc(&d_b, b_out));
-        checar(cudaMalloc(&d_in, b_in));
-        checar(cudaMalloc(&d_grad_in, b_in));
-        checar(cudaMemcpy(d_grad_out, grad_out.data(), b_out, cudaMemcpyHostToDevice));
-        checar(cudaMemcpy(d_z, last_z.data(), b_out, cudaMemcpyHostToDevice));
-        checar(cudaMemcpy(d_w, weights.data(), b_w, cudaMemcpyHostToDevice));
-        checar(cudaMemcpy(d_b, bias.data(), b_out, cudaMemcpyHostToDevice));
-        checar(cudaMemcpy(d_in, last_input->data(), b_in, cudaMemcpyHostToDevice));
-
+    const float* Backward(const float* d_grad_out, float learning_rate,
+                          bool calcular_grad_in = true) {
         delta_kernel<<<grade(out_features), BLOCO>>>(
             d_grad_out, d_z, out_features, final, d_delta);
         checar(cudaGetLastError());
@@ -169,18 +153,9 @@ public:
             checar(cudaGetLastError());
         }
         update_kernel<<<grade(in_features * out_features), BLOCO>>>(
-            d_in, d_delta, in_features, out_features, learning_rate, d_w, d_b);
+            d_last_input, d_delta, in_features, out_features, learning_rate, d_w, d_b);
         checar(cudaGetLastError());
-
-        // Parâmetros atualizados voltam para a CPU.
-        checar(cudaMemcpy(weights.data(), d_w, b_w, cudaMemcpyDeviceToHost));
-        checar(cudaMemcpy(bias.data(), d_b, b_out, cudaMemcpyDeviceToHost));
-        if (calcular_grad_in) {
-            checar(cudaMemcpy(grad_in.data(), d_grad_in, b_in, cudaMemcpyDeviceToHost));
-        }
-        cudaFree(d_grad_out); cudaFree(d_z); cudaFree(d_delta); cudaFree(d_w);
-        cudaFree(d_b); cudaFree(d_in); cudaFree(d_grad_in);
-        return grad_in;
+        return d_grad_in;
     }
 };
 
@@ -263,10 +238,17 @@ void avaliar(DenseLayer& l1, DenseLayer& l2, DenseLayer& l3,
     size_t exemplos_erro = 0;
     double perda_total = 0;
 
-    // Só fazemos forward aqui. Os pesos ficam fixos.
+    // Só fazemos forward aqui. Os pesos ficam fixos (e na GPU).
+    float* d_imagem;
+    checar(cudaMalloc(&d_imagem, entradas * sizeof(float)));
+    vector<float> escores(classes);
     for (size_t i = 0; i < teste.size(); ++i) {
         const auto& amostra = teste[i];
-        const auto& escores = l3.Forward(l2.Forward(l1.Forward(amostra.imagem)));
+        checar(cudaMemcpy(d_imagem, amostra.imagem.data(), entradas * sizeof(float),
+                          cudaMemcpyHostToDevice));
+        const float* d_escores = l3.Forward(l2.Forward(l1.Forward(d_imagem)));
+        checar(cudaMemcpy(escores.data(), d_escores, classes * sizeof(float),
+                          cudaMemcpyDeviceToHost));
         // O índice do maior escore indica a classe prevista.
         int previsto = static_cast<int>(
             max_element(escores.begin(), escores.end()) - escores.begin());
@@ -290,6 +272,8 @@ void avaliar(DenseLayer& l1, DenseLayer& l2, DenseLayer& l3,
             ++exemplos_tipo;
         }
     }
+
+    cudaFree(d_imagem);
 
     cout << "\nAVALIACAO FINAL\n"
          << "Acuracia " << setprecision(1) << 100.0 * acertos / teste.size()
@@ -365,29 +349,56 @@ int main(int argc, char** argv) {
         Barenn::DenseLayer l2(32, 16);
         Barenn::DenseLayer l3(16, Barenn::classes, true);
         vector<float> gradiente(Barenn::classes);
+        vector<float> escores(Barenn::classes);
         array<double, epocas> perdas{};
+
+        // Imagens de treino em um vetor contíguo [amostra][atributo], para
+        // irem para a GPU em uma única cópia.
+        vector<float> imagens(treino.size() * Barenn::entradas);
+        for (size_t i = 0; i < treino.size(); ++i) {
+            copy(treino[i].imagem.begin(), treino[i].imagem.end(),
+                 imagens.begin() + i * Barenn::entradas);
+        }
+        float *d_imagens, *d_escores_grad;
+        Barenn::checar(cudaMalloc(&d_imagens, imagens.size() * sizeof(float)));
+        Barenn::checar(cudaMalloc(&d_escores_grad, Barenn::classes * sizeof(float)));
 
         // Aquecimento: cria o contexto CUDA fora da medição.
         Barenn::checar(cudaFree(0));
 
         // A medição inclui forward, perda e backward de todas as épocas.
         const auto inicio = chrono::steady_clock::now();
+        // A cópia do conjunto de treino para a GPU entra na medição.
+        Barenn::checar(cudaMemcpy(d_imagens, imagens.data(), imagens.size() * sizeof(float),
+                                  cudaMemcpyHostToDevice));
         for (int epoca = 0; epoca < epocas; ++epoca) {
             double perda_total = 0;
             // Uma época percorre todo o conjunto na ordem do arquivo.
-            for (const auto& amostra : treino) {
-                const auto& escores = l3.Forward(l2.Forward(l1.Forward(amostra.imagem)));
-                perda_total += Barenn::perda(escores, amostra.rotulo, &gradiente);
+            for (size_t i = 0; i < treino.size(); ++i) {
+                const float* d_x = d_imagens + i * Barenn::entradas;
+                const float* d_escores = l3.Forward(l2.Forward(l1.Forward(d_x)));
+
+                // Só os 10 escores voltam para a CPU, que calcula a perda; só o
+                // gradiente da perda (10 floats) volta para a GPU.
+                Barenn::checar(cudaMemcpy(escores.data(), d_escores,
+                                          Barenn::classes * sizeof(float),
+                                          cudaMemcpyDeviceToHost));
+                perda_total += Barenn::perda(escores, treino[i].rotulo, &gradiente);
+                Barenn::checar(cudaMemcpy(d_escores_grad, gradiente.data(),
+                                          Barenn::classes * sizeof(float),
+                                          cudaMemcpyHostToDevice));
 
                 // Propaga o gradiente da última camada até a primeira.
                 // Cada Backward também atualiza os parâmetros da sua camada.
-                const auto& grad3 = l3.Backward(gradiente, taxa);
-                const auto& grad2 = l2.Backward(grad3, taxa);
-                l1.Backward(grad2, taxa, false);
+                const float* d_grad3 = l3.Backward(d_escores_grad, taxa);
+                const float* d_grad2 = l2.Backward(d_grad3, taxa);
+                l1.Backward(d_grad2, taxa, false);
             }
             perdas[epoca] = perda_total / treino.size();
         }
         const chrono::duration<double> tempo = chrono::steady_clock::now() - inicio;
+        cudaFree(d_imagens);
+        cudaFree(d_escores_grad);
 
         // Imprime as métricas e roda a avaliação após encerrar o cronômetro.
         cout << fixed << setprecision(4)
