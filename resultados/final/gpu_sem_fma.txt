@@ -1,0 +1,71 @@
+# job 30351: sbatch slurm/comparar.slurm 10 ./legado ./gpu ./gpu_sem_fma
+# PTX com fma.rn.f32: gpu / gpu_sem_fma
+158
+0
+
+compute21
+Model name:                           Intel(R) Core(TM) i9-14900
+Cpus_allowed_list:	0,2,4,6,8,10,12,14
+NVIDIA RTX A1000
+OMP_NUM_THREADS=8
+================ ./legado ================
+VALIDACAO OK: saida identica a ./legado (exceto linhas de tempo)
+Binario: ./legado | repeticoes: 10 | host: compute21
+rodada 1 | treino 0.3086 s | total 0.3320 s
+rodada 2 | treino 0.3084 s | total 0.3346 s
+rodada 3 | treino 0.3080 s | total 0.3328 s
+rodada 4 | treino 0.3078 s | total 0.3311 s
+rodada 5 | treino 0.3076 s | total 0.3322 s
+rodada 6 | treino 0.3103 s | total 0.3394 s
+rodada 7 | treino 0.3170 s | total 0.3452 s
+rodada 8 | treino 0.3081 s | total 0.3323 s
+rodada 9 | treino 0.3083 s | total 0.3324 s
+rodada 10 | treino 0.3080 s | total 0.3320 s
+MEDIA treino 0.3092 s (desvio 0.0028) | total 0.3344 s (desvio 0.0045)
+================ ./gpu ================
+10,11c10,11
+< Epoca 41/51 | perda media 0.0155
+< Epoca 46/51 | perda media 0.0145
+---
+> Epoca 41/51 | perda media 0.0156
+> Epoca 46/51 | perda media 0.0144
+15,16c15,16
+< Acuracia 95.5% | 1717 acertos em 1797 imagens
+< Perda media 0.0432
+---
+> Acuracia 95.6% | 1718 acertos em 1797 imagens
+> Perda media 0.0438
+29c29,30
+<        7         9            9
+---
+>        7         9            8
+>        3         2            6
+31d31
+<        3         2            5
+VALIDACAO: saidas diferentes (diff acima)
+Binario: ./gpu | repeticoes: 10 | host: compute21
+rodada 1 | treino 0.3918 s | total 2.5029 s
+rodada 2 | treino 0.3919 s | total 2.5162 s
+rodada 3 | treino 0.3924 s | total 2.4852 s
+rodada 4 | treino 0.3926 s | total 2.5242 s
+rodada 5 | treino 0.4175 s | total 2.6189 s
+rodada 6 | treino 0.3919 s | total 2.5246 s
+rodada 7 | treino 0.3922 s | total 2.5155 s
+rodada 8 | treino 0.3924 s | total 2.5026 s
+rodada 9 | treino 0.3923 s | total 2.5208 s
+rodada 10 | treino 0.3923 s | total 2.5275 s
+MEDIA treino 0.3947 s (desvio 0.0080) | total 2.5238 s (desvio 0.0359)
+================ ./gpu_sem_fma ================
+VALIDACAO OK: saida identica a ./legado (exceto linhas de tempo)
+Binario: ./gpu_sem_fma | repeticoes: 10 | host: compute21
+rodada 1 | treino 0.3986 s | total 2.5311 s
+rodada 2 | treino 0.3989 s | total 2.5279 s
+rodada 3 | treino 0.3983 s | total 2.5326 s
+rodada 4 | treino 0.3984 s | total 2.5383 s
+rodada 5 | treino 0.4277 s | total 2.6398 s
+rodada 6 | treino 0.3995 s | total 2.5199 s
+rodada 7 | treino 0.3993 s | total 2.5303 s
+rodada 8 | treino 0.3985 s | total 2.5388 s
+rodada 9 | treino 0.3984 s | total 2.5449 s
+rodada 10 | treino 0.3992 s | total 2.5347 s
+MEDIA treino 0.4017 s (desvio 0.0092) | total 2.5438 s (desvio 0.0344)
