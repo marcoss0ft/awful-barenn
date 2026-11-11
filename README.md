@@ -26,7 +26,7 @@ Todas as versões foram compiladas **a partir das próprias tags** (`scripts/com
 | CUDA residente ([`v1.1-cuda-residente`](https://github.com/marcoss0ft/awful-barenn/tree/v1.1-cuda-residente)) | dados e parâmetros residentes na GPU | 6,10 s ± 0,13 | 0,06× | 8,24 s | equivalente* |
 | **CUDA otimizado** ([`v1.2-cuda-shared`](https://github.com/marcoss0ft/awful-barenn/tree/v1.2-cuda-shared)) | 1 kernel por época, pesos em **memória compartilhada** com passo anti-conflito de banco | **0,3950 s ± 0,0079** | 0,94× | 2,55 s | equivalente* |
 
-\* Perdas iguais até a 3ª casa. Na 4ª casa diferem nas épocas 41/46 (0,0156/0,0144 contra 0,0155/0,0145), e a acurácia é 95,6% contra 95,5% (1 imagem). O PTX da GPU usa FMA (`fma.rn.f32`, um arredondamento) e o binário da CPU não (`mulss` + `addss`, dois arredondamentos). As três versões CUDA dão exatamente a mesma saída entre si. Detalhes na [Issue #7](https://github.com/marcoss0ft/awful-barenn/issues/7).
+\* Perdas iguais até a 3ª casa. Na 4ª casa diferem nas épocas 41/46 (0,0156/0,0144 contra 0,0155/0,0145), e a acurácia é 95,6% contra 95,5% (1 imagem). O PTX da GPU usa FMA (`fma.rn.f32`, um arredondamento) e o binário da CPU não (`mulss` + `addss`, dois arredondamentos). As três versões CUDA dão exatamente a mesma saída entre si. Compilando o mesmo `barenn_gpu.cu` com `nvcc --fmad=false` (`make gpu_sem_fma`), a saída fica **idêntica** à do legado, com treino de 0,402 s contra 0,395 s no mesmo job ([log](resultados/final/gpu_sem_fma.txt)). Detalhes na [Issue #7](https://github.com/marcoss0ft/awful-barenn/issues/7).
 
 **Na GPU**, a evolução foi 124,5 s → 6,1 s → 0,40 s (**315×** da CUDA inicial para a otimizada). A ablação no mesmo kernel ([Issue #11](https://github.com/marcoss0ft/awful-barenn/issues/11)):
 

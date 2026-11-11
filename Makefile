@@ -28,6 +28,11 @@ gpu_sem_padding: experimentos/gpu_sem_padding.cu
 gpu_pesos_global: experimentos/gpu_pesos_global.cu
 	$(NVCC) $(NVCCFLAGS) experimentos/gpu_pesos_global.cu -o gpu_pesos_global
 
+# Controle de corretude: mesma versão CUDA sem contração de a*b+c em FMA.
+# A saída fica idêntica à do legado (Issue #7).
+gpu_sem_fma: barenn_gpu.cu
+	$(NVCC) $(NVCCFLAGS) --fmad=false barenn_gpu.cu -o gpu_sem_fma
+
 # Experimento (resultado negativo): OpenMP dentro do laço de treino
 omp_no_treino: experimentos/omp_no_treino.cpp
 	$(CXX) $(CXXFLAGS) -fopenmp experimentos/omp_no_treino.cpp -o omp_no_treino
@@ -44,6 +49,6 @@ cpu_prof: barenn_cpu.cpp
 	$(CXX) $(CXXFLAGS) -fopenmp -g barenn_cpu.cpp -o cpu_prof
 
 clean:
-	rm -f legado legado_O0 legado_prof cpu cpu_prof omp_no_treino gpu gpu_sem_padding gpu_pesos_global
+	rm -f legado legado_O0 legado_prof cpu cpu_prof omp_no_treino gpu gpu_sem_padding gpu_pesos_global gpu_sem_fma
 
 .PHONY: all clean

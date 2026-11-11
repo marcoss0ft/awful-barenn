@@ -8,6 +8,7 @@ gpu
 omp_no_treino
 gpu_sem_padding
 gpu_pesos_global
+gpu_sem_fma
 *.o
 *.out.tmp
 
