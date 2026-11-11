@@ -1,0 +1,33 @@
+compute20
+Model name:                           Intel(R) Core(TM) i9-14900
+Cpus_allowed_list:	0,2,4,6,8,10,12,14
+NVIDIA RTX A1000
+OMP_NUM_THREADS=8
+================ ./legado ================
+VALIDACAO OK: saida identica a ./legado (exceto linhas de tempo)
+Binario: ./legado | repeticoes: 10 | host: compute20
+rodada 1 | treino 0.3087 s | total 0.3321 s
+rodada 2 | treino 0.3077 s | total 0.3320 s
+rodada 3 | treino 0.3081 s | total 0.3343 s
+rodada 4 | treino 0.3084 s | total 0.3328 s
+rodada 5 | treino 0.3094 s | total 0.3388 s
+rodada 6 | treino 0.3095 s | total 0.3381 s
+rodada 7 | treino 0.3099 s | total 0.3377 s
+rodada 8 | treino 0.3106 s | total 0.3388 s
+rodada 9 | treino 0.3085 s | total 0.3332 s
+rodada 10 | treino 0.3085 s | total 0.3325 s
+MEDIA treino 0.3089 s (desvio 0.0009) | total 0.3350 s (desvio 0.0029)
+================ ./cpu ================
+VALIDACAO OK: saida identica a ./legado (exceto linhas de tempo)
+Binario: ./cpu | repeticoes: 10 | host: compute20
+rodada 1 | treino 0.1841 s | total 0.2089 s
+rodada 2 | treino 0.1834 s | total 0.2095 s
+rodada 3 | treino 0.1843 s | total 0.2084 s
+rodada 4 | treino 0.1834 s | total 0.2088 s
+rodada 5 | treino 0.1844 s | total 0.2124 s
+rodada 6 | treino 0.1833 s | total 0.2077 s
+rodada 7 | treino 0.1836 s | total 0.2075 s
+rodada 8 | treino 0.1837 s | total 0.2070 s
+rodada 9 | treino 0.1857 s | total 0.2089 s
+rodada 10 | treino 0.1846 s | total 0.2131 s
+MEDIA treino 0.1840 s (desvio 0.0007) | total 0.2092 s (desvio 0.0020)

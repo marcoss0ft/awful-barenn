@@ -1,0 +1,52 @@
+Model name:                           Intel(R) Core(TM) i9-14900
+OMP_NUM_THREADS=8
+== Validacao de ./cpu contra o legado ==
+VALIDACAO OK: saida identica a ./legado (exceto linhas de tempo)
+== Saida completa de ./cpu ==
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0155
+Epoca 46/51 | perda media 0.0145
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 0.2214 s
+
+AVALIACAO FINAL
+Acuracia 95.5% | 1717 acertos em 1797 imagens
+Perda media 0.0432
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            9
+       8         1            6
+       3         2            5
+Tempo de leitura 0.0220 s
+Tempo de avaliacao 0.0011 s
+== Benchmark de ./cpu ==
+Binario: ./cpu | repeticoes: 10 | host: compute20
+rodada 1 | treino 0.2212 s | total 0.2498 s
+rodada 2 | treino 0.2208 s | total 0.2500 s
+rodada 3 | treino 0.2218 s | total 0.2488 s
+rodada 4 | treino 0.2207 s | total 0.2493 s
+rodada 5 | treino 0.2207 s | total 0.2488 s
+rodada 6 | treino 0.2200 s | total 0.2468 s
+rodada 7 | treino 0.2215 s | total 0.2496 s
+rodada 8 | treino 0.2211 s | total 0.2478 s
+rodada 9 | treino 0.2220 s | total 0.2499 s
+rodada 10 | treino 0.2231 s | total 0.2511 s
+MEDIA treino 0.2213 s (desvio 0.0009) | total 0.2492 s (desvio 0.0012)
