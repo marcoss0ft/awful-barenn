@@ -272,8 +272,12 @@ int main(int argc, char** argv) {
     const string arquivo_teste = argc == 3 ? argv[2] : "optdigits.tes";
 
     try {
+        // Mede também a leitura e a avaliação, que ficam fora do tempo de treino.
+        const auto inicio_leitura = chrono::steady_clock::now();
         const auto treino = Barenn::ler_dados(arquivo_treino);
         const auto teste = Barenn::ler_dados(arquivo_teste);
+        const chrono::duration<double> tempo_leitura =
+            chrono::steady_clock::now() - inicio_leitura;
         if (filesystem::equivalent(arquivo_treino, arquivo_teste)) {
             throw runtime_error("Use arquivos distintos para treino e teste.");
         }
@@ -314,7 +318,14 @@ int main(int argc, char** argv) {
                  << " | perda media " << perdas[epoca] << "\n";
         }
         cout << "Tempo de treino " << tempo.count() << " s\n";
+        const auto inicio_avaliacao = chrono::steady_clock::now();
         Barenn::avaliar(l1, l2, l3, teste);
+        const chrono::duration<double> tempo_avaliacao =
+            chrono::steady_clock::now() - inicio_avaliacao;
+        // Linhas extras de tempo (ignoradas pelo scripts/validar.sh).
+        cout << fixed << setprecision(4)
+             << "Tempo de leitura " << tempo_leitura.count() << " s\n"
+             << "Tempo de avaliacao " << tempo_avaliacao.count() << " s\n";
     } catch (const exception& erro) {
         cerr << "Erro: " << erro.what() << "\n";
         return 1;
