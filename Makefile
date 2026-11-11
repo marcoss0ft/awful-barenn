@@ -4,8 +4,10 @@
 
 CXX      = g++
 CXXFLAGS = -std=c++17 -O3 -Wall
+NVCC      = nvcc
+NVCCFLAGS = -O3
 
-all: legado cpu
+all: legado cpu gpu
 
 # Código legado sem alterações, compilado com -O3 (referência das medições)
 legado: barenn.cpp
@@ -14,6 +16,10 @@ legado: barenn.cpp
 # Versão otimizada para CPU (OpenMP na leitura e na avaliação)
 cpu: barenn_cpu.cpp
 	$(CXX) $(CXXFLAGS) -fopenmp barenn_cpu.cpp -o cpu
+
+# Versão CUDA (no Franky: module load cuda/12.8.1)
+gpu: barenn_gpu.cu
+	$(NVCC) $(NVCCFLAGS) barenn_gpu.cu -o gpu
 
 # Experimento (resultado negativo): OpenMP dentro do laço de treino
 omp_no_treino: experimentos/omp_no_treino.cpp
@@ -31,6 +37,6 @@ cpu_prof: barenn_cpu.cpp
 	$(CXX) $(CXXFLAGS) -fopenmp -g barenn_cpu.cpp -o cpu_prof
 
 clean:
-	rm -f legado legado_O0 legado_prof cpu cpu_prof omp_no_treino
+	rm -f legado legado_O0 legado_prof cpu cpu_prof omp_no_treino gpu
 
 .PHONY: all clean
