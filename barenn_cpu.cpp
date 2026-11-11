@@ -20,6 +20,9 @@ namespace Barenn {
 // Cada imagem tem 64 atributos e pertence a uma das dez classes.
 constexpr int entradas = 64;
 constexpr int classes = 10;
+// Tamanho das camadas ocultas (64 -> 32 -> 16 -> 10).
+constexpr int oculta1 = 32;
+constexpr int oculta2 = 16;
 
 class DenseLayer {
     int in_features;
@@ -69,6 +72,20 @@ public:
             out[i] = final ? sum : max(0.0f, sum);
         }
         return out;
+    }
+
+    // Forward só para inferência: não guarda nada na camada (é const), então
+    // várias threads podem chamar ao mesmo tempo. Faz as mesmas contas, na
+    // mesma ordem, que o Forward acima.
+    void Inferir(const float* input, float* saida) const {
+        for (int i = 0; i < out_features; ++i) {
+            const float* w = &weights[i * in_features];
+            float sum = bias[i];
+            for (int j = 0; j < in_features; ++j) {
+                sum += input[j] * w[j];
+            }
+            saida[i] = final ? sum : max(0.0f, sum);
+        }
     }
 
     // calcular_grad_in = false na primeira camada: o gradiente em relação à
@@ -184,7 +201,7 @@ float perda(const vector<float>& escores, int rotulo,
     return total;
 }
 
-void avaliar(DenseLayer& l1, DenseLayer& l2, DenseLayer& l3,
+void avaliar(const DenseLayer& l1, const DenseLayer& l2, const DenseLayer& l3,
              const vector<Amostra>& teste) {
     struct Exemplo {
         size_t linha;
@@ -203,10 +220,24 @@ void avaliar(DenseLayer& l1, DenseLayer& l2, DenseLayer& l3,
     size_t exemplos_erro = 0;
     double perda_total = 0;
 
-    // Só fazemos forward aqui. Os pesos ficam fixos.
+    // Fase paralela: só fazemos forward aqui e os pesos ficam fixos, então
+    // cada imagem de teste é independente das outras.
+    const int n = static_cast<int>(teste.size());
+    vector<float> todos_escores(teste.size() * classes);
+    #pragma omp parallel for
+    for (int i = 0; i < n; ++i) {
+        float a1[oculta1];
+        float a2[oculta2];
+        l1.Inferir(teste[i].imagem.data(), a1);
+        l2.Inferir(a1, a2);
+        l3.Inferir(a2, &todos_escores[i * classes]);
+    }
+
+    // Fase sequencial: estatísticas na mesma ordem do código legado.
     for (size_t i = 0; i < teste.size(); ++i) {
         const auto& amostra = teste[i];
-        const auto& escores = l3.Forward(l2.Forward(l1.Forward(amostra.imagem)));
+        const vector<float> escores(todos_escores.begin() + i * classes,
+                                    todos_escores.begin() + (i + 1) * classes);
         // O índice do maior escore indica a classe prevista.
         int previsto = static_cast<int>(
             max_element(escores.begin(), escores.end()) - escores.begin());
@@ -301,9 +332,9 @@ int main(int argc, char** argv) {
         constexpr int epocas = 51;
         constexpr float taxa = 0.02f;
         // Rede densa com dimensões 64 -> 32 -> 16 -> 10.
-        Barenn::DenseLayer l1(Barenn::entradas, 32);
-        Barenn::DenseLayer l2(32, 16);
-        Barenn::DenseLayer l3(16, Barenn::classes, true);
+        Barenn::DenseLayer l1(Barenn::entradas, Barenn::oculta1);
+        Barenn::DenseLayer l2(Barenn::oculta1, Barenn::oculta2);
+        Barenn::DenseLayer l3(Barenn::oculta2, Barenn::classes, true);
         vector<float> gradiente(Barenn::classes);
         array<double, epocas> perdas{};
 
