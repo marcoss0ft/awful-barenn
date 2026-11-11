@@ -1,0 +1,20 @@
+Model name:                           Intel(R) Core(TM) i9-14900
+== Legado -O0 (contexto) ==
+Binario: ./legado_O0 | repeticoes: 3 | host: compute21
+rodada 1 | treino 4.5485 s | total 4.6041 s
+rodada 2 | treino 4.5618 s | total 4.6115 s
+rodada 3 | treino 4.5556 s | total 4.5976 s
+MEDIA treino 4.5553 s (desvio 0.0067) | total 4.6044 s (desvio 0.0070)
+== Legado -O3 (baseline) ==
+Binario: ./legado | repeticoes: 10 | host: compute21
+rodada 1 | treino 0.3086 s | total 0.3365 s
+rodada 2 | treino 0.3098 s | total 0.3339 s
+rodada 3 | treino 0.3173 s | total 0.3457 s
+rodada 4 | treino 0.3094 s | total 0.3380 s
+rodada 5 | treino 0.3087 s | total 0.3329 s
+rodada 6 | treino 0.3089 s | total 0.3325 s
+rodada 7 | treino 0.3166 s | total 0.3463 s
+rodada 8 | treino 0.3079 s | total 0.3315 s
+rodada 9 | treino 0.3156 s | total 0.3447 s
+rodada 10 | treino 0.3078 s | total 0.3323 s
+MEDIA treino 0.3111 s (desvio 0.0038) | total 0.3374 s (desvio 0.0060)

@@ -1,0 +1,45 @@
+--------------------------------------------------------------------------------
+Profile data file 'resultados/callgrind.legado_prof.out' (creator: callgrind-3.24.0)
+--------------------------------------------------------------------------------
+I1 cache: 32768 B, 64 B, 8-way associative
+D1 cache: 32768 B, 64 B, 8-way associative
+LL cache: 8388608 B, 64 B, 16-way associative
+Timerange: Basic block 0 - 1221727311
+Trigger: Program termination
+Profiled target:  ./legado_prof (PID 1281938, part 1)
+Events recorded:  Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Events shown:     Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Event sort order: Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Thresholds:       99 0 0 0 0 0 0 0 0
+Include dirs:     
+User annotated:   
+Auto-annotation:  on
+
+--------------------------------------------------------------------------------
+Ir                     Dr                     Dw                   I1mr            D1mr             D1mw            ILmr           DLmr           DLmw            
+--------------------------------------------------------------------------------
+9,728,197,581 (100.0%) 2,531,380,491 (100.0%) 356,380,602 (100.0%) 54,122 (100.0%) 921,846 (100.0%) 34,334 (100.0%) 2,936 (100.0%) 7,975 (100.0%) 28,681 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                     Dr                     Dw                   I1mr           D1mr             D1mw            ILmr        DLmr           DLmw            file:function
+--------------------------------------------------------------------------------
+8,332,344,600 (85.65%) 2,199,490,461 (86.89%) 201,641,264 (56.58%)    65 ( 0.12%)  97,543 (10.58%)  1,582 ( 4.61%) 63 ( 2.15%)     .              .           barenn.cpp:main [/home/marcosarpc/scratch/aps2/dev/legado_prof]
+  428,550,813 ( 4.41%)    63,951,245 ( 2.53%)   2,534,652 ( 0.71%)    33 ( 0.06%)     106 ( 0.01%)      0          33 ( 1.12%)     .              .           /opt/ohpc/pub/compiler/gcc/14.2.0/include/c++/14.2.0/bits/stl_vector.h:main
+  188,966,340 ( 1.94%)    59,030,943 ( 2.33%)  32,452,085 ( 9.11%)    46 ( 0.08%)   7,155 ( 0.78%)     19 ( 0.06%) 19 ( 0.65%)     1 ( 0.01%)     .           ???:_int_free [/usr/lib64/libc.so.6]
+  126,675,878 ( 1.30%)    32,412,563 ( 1.28%)  17,668,142 ( 4.96%)     8 ( 0.01%)      82 ( 0.01%)      9 ( 0.03%)  7 ( 0.24%)     1 ( 0.01%)     .           ???:malloc [/usr/lib64/libc.so.6]
+   73,664,906 ( 0.76%)    23,572,768 ( 0.93%)  11,786,386 ( 3.31%)     6 ( 0.01%)      91 ( 0.01%)      0           4 ( 0.14%)     .              .           ???:free [/usr/lib64/libc.so.6]
+   63,608,365 ( 0.65%)    11,824,944 ( 0.47%)   7,034,645 ( 1.97%) 5,674 (10.48%)      49 ( 0.01%)     15 ( 0.04%) 33 ( 1.12%)     3 ( 0.04%)     .           ???:____strtof_l_internal [/usr/lib64/libc.so.6]
+   54,949,902 ( 0.56%)    15,674,671 ( 0.62%)  12,087,912 ( 3.39%)    25 ( 0.05%)      18 ( 0.00%)      0          18 ( 0.61%)     .              .           ???:std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >::_M_extract_float(std::istreambuf_iterator<char, std::char_traits<char> >, std::istreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, std::_Ios_Iostate&, std::string&) const [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   35,805,076 ( 0.37%)    14,589,538 ( 0.58%)   4,411,712 ( 1.24%)     5 ( 0.01%)      17 ( 0.00%)      0           5 ( 0.17%)     1 ( 0.01%)     .           ???:std::istream::sentry::sentry(std::istream&, bool) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   35,359,128 ( 0.36%)     5,893,188 ( 0.23%)   5,893,188 ( 1.65%)     3 ( 0.01%)       0               0           1 ( 0.03%)     .              .           ???:operator new(unsigned long) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   34,169,600 ( 0.35%)    10,071,040 ( 0.40%)   7,912,960 ( 2.22%)     9 ( 0.02%)       6 ( 0.00%)      0           7 ( 0.24%)     .              .           ???:std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >::do_get(std::istreambuf_iterator<char, std::char_traits<char> >, std::istreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, std::_Ios_Iostate&, float&) const [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   28,283,246 ( 0.29%)     8,277,114 ( 0.33%)   6,057,725 ( 1.70%)   505 ( 0.93%) 787,134 (85.39%)  6,836 (19.91%)  8 ( 0.27%)     0          6,199 (21.61%)  ???:__memcpy_avx_unaligned_erms [/usr/lib64/libc.so.6]
+   27,958,896 ( 0.29%)     2,541,873 ( 0.10%)   5,863,640 ( 1.65%)     5 ( 0.01%)       0              12 ( 0.03%)  5 ( 0.17%)     0              2 ( 0.01%)  ???:__memset_avx2_unaligned_erms [/usr/lib64/libc.so.6]
+   25,736,466 ( 0.26%)     8,578,818 ( 0.34%)   8,188,873 ( 2.30%)    14 ( 0.03%)       1 ( 0.00%)      1 ( 0.00%) 14 ( 0.48%)     .              .           /opt/ohpc/pub/compiler/gcc/14.2.0/include/c++/14.2.0/bits/new_allocator.h:main
+   24,566,605 ( 0.25%)     5,654,221 ( 0.22%)   3,704,492 ( 1.04%)    10 ( 0.02%)       1 ( 0.00%)      1 ( 0.00%) 10 ( 0.34%)     .              .           /opt/ohpc/pub/compiler/gcc/14.2.0/include/c++/14.2.0/bits/stl_algobase.h:main
+   20,331,575 ( 0.21%)     2,621,978 ( 0.10%)     228,357 ( 0.06%)    57 ( 0.11%)   1,194 ( 0.13%)    139 ( 0.40%) 56 ( 1.91%)     .              .           barenn.cpp:Barenn::avaliar(Barenn::DenseLayer&, Barenn::DenseLayer&, Barenn::DenseLayer&, std::vector<Barenn::Amostra, std::allocator<Barenn::Amostra> > const&) [/home/marcosarpc/scratch/aps2/dev/legado_prof]
+   17,873,939 ( 0.18%)     5,416,832 ( 0.21%)   1,626,213 ( 0.46%)     7 ( 0.01%)       3 ( 0.00%)      0           4 ( 0.14%)     .              .           ???:std::istreambuf_iterator<char, std::char_traits<char> >::equal(std::istreambuf_iterator<char, std::char_traits<char> > const&) const [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   16,904,960 ( 0.17%)     5,035,520 ( 0.20%)   2,877,440 ( 0.81%)     5 ( 0.01%)      13 ( 0.00%)      0           3 ( 0.10%)     .              .           ???:std::istream& std::istream::_M_extract<float>(float&) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   13,249,224 ( 0.14%)     2,024,187 ( 0.08%)   1,656,153 ( 0.46%)   562 ( 1.04%)       0               0           6 ( 0.20%)     .              .           ???:round_and_return [/usr/lib64/libc.so.6]
+   10,071,040 ( 0.10%)     3,237,120 ( 0.13%)   1,798,400 ( 0.50%)     6 ( 0.01%)       6 ( 0.00%)      0           3 ( 0.10%)     1 ( 0.01%)     .           ???:void std::__convert_to_v<float>(char const*, float&, std::_Ios_Iostate&, __locale_struct* const&) [/opt/ohpc/pub/compiler/gcc/14.2.0/lib64/libstdc++.so.6.0.33]
+   10,005,828 ( 0.10%)     2,489,972 ( 0.10%)   1,656,153 ( 0.46%)     8 ( 0.01%)       6 ( 0.00%)      0           5 ( 0.17%)     1 ( 0.01%)     .           ???:str_to_mpn.part.0.constprop.0 [/usr/lib64/libc.so.6]
