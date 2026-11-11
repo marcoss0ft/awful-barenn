@@ -1,0 +1,121 @@
+compute22
+Model name:                           Intel(R) Core(TM) i9-14900
+Cpus_allowed_list:	0,2,4,6,8,10,12,14
+NVIDIA RTX A1000, 570.124.06
+OMP_NUM_THREADS=8
+================ Corretude (diff contra v0.0-baseline) ================
+--- v0.1-cpu-memoria
+identica ao legado
+--- v0.2-cpu-openmp
+identica ao legado
+--- v1.1-cuda-residente
+10,11c10,11
+< Epoca 41/51 | perda media 0.0155
+< Epoca 46/51 | perda media 0.0145
+---
+> Epoca 41/51 | perda media 0.0156
+> Epoca 46/51 | perda media 0.0144
+15,16c15,16
+< Acuracia 95.5% | 1717 acertos em 1797 imagens
+< Perda media 0.0432
+---
+> Acuracia 95.6% | 1718 acertos em 1797 imagens
+> Perda media 0.0438
+29c29,30
+<        7         9            9
+---
+>        7         9            8
+>        3         2            6
+31d31
+<        3         2            5
+--- v1.2-cuda-shared
+10,11c10,11
+< Epoca 41/51 | perda media 0.0155
+< Epoca 46/51 | perda media 0.0145
+---
+> Epoca 41/51 | perda media 0.0156
+> Epoca 46/51 | perda media 0.0144
+15,16c15,16
+< Acuracia 95.5% | 1717 acertos em 1797 imagens
+< Perda media 0.0432
+---
+> Acuracia 95.6% | 1718 acertos em 1797 imagens
+> Perda media 0.0438
+29c29,30
+<        7         9            9
+---
+>        7         9            8
+>        3         2            6
+31d31
+<        3         2            5
+================ v0.0-baseline ================
+Binario: bin_tags/v0.0-baseline | repeticoes: 10 | host: compute22
+rodada 1 | treino 0.3731 s | total 0.4020 s
+rodada 2 | treino 0.3727 s | total 0.4002 s
+rodada 3 | treino 0.3730 s | total 0.4013 s
+rodada 4 | treino 0.3738 s | total 0.4027 s
+rodada 5 | treino 0.3727 s | total 0.4010 s
+rodada 6 | treino 0.3716 s | total 0.3997 s
+rodada 7 | treino 0.3738 s | total 0.4021 s
+rodada 8 | treino 0.3714 s | total 0.3998 s
+rodada 9 | treino 0.3695 s | total 0.3942 s
+rodada 10 | treino 0.3713 s | total 0.3995 s
+MEDIA treino 0.3723 s (desvio 0.0013) | total 0.4003 s (desvio 0.0024)
+================ v0.1-cpu-memoria ================
+Binario: bin_tags/v0.1-cpu-memoria | repeticoes: 10 | host: compute22
+rodada 1 | treino 0.2220 s | total 0.2508 s
+rodada 2 | treino 0.2209 s | total 0.2488 s
+rodada 3 | treino 0.2207 s | total 0.2485 s
+rodada 4 | treino 0.2211 s | total 0.2484 s
+rodada 5 | treino 0.2210 s | total 0.2493 s
+rodada 6 | treino 0.2210 s | total 0.2491 s
+rodada 7 | treino 0.2209 s | total 0.2486 s
+rodada 8 | treino 0.2215 s | total 0.2497 s
+rodada 9 | treino 0.2220 s | total 0.2515 s
+rodada 10 | treino 0.2281 s | total 0.2528 s
+MEDIA treino 0.2219 s (desvio 0.0022) | total 0.2498 s (desvio 0.0015)
+================ v0.2-cpu-openmp ================
+Binario: bin_tags/v0.2-cpu-openmp | repeticoes: 10 | host: compute22
+rodada 1 | treino 0.2233 s | total 0.2336 s
+rodada 2 | treino 0.2228 s | total 0.2331 s
+rodada 3 | treino 0.2230 s | total 0.2335 s
+rodada 4 | treino 0.2226 s | total 0.2332 s
+rodada 5 | treino 0.2228 s | total 0.2321 s
+rodada 6 | treino 0.2226 s | total 0.2322 s
+rodada 7 | treino 0.2184 s | total 0.2283 s
+rodada 8 | treino 0.2173 s | total 0.2267 s
+rodada 9 | treino 0.2227 s | total 0.2324 s
+rodada 10 | treino 0.2230 s | total 0.2335 s
+MEDIA treino 0.2218 s (desvio 0.0021) | total 0.2319 s (desvio 0.0024)
+================ v1.1-cuda-residente ================
+Binario: bin_tags/v1.1-cuda-residente | repeticoes: 10 | host: compute22
+rodada 1 | treino 6.1302 s | total 8.3500 s
+rodada 2 | treino 5.7488 s | total 7.8898 s
+rodada 3 | treino 6.1164 s | total 8.2517 s
+rodada 4 | treino 6.1793 s | total 8.3296 s
+rodada 5 | treino 6.0854 s | total 8.2475 s
+rodada 6 | treino 6.1831 s | total 8.3091 s
+rodada 7 | treino 6.1765 s | total 8.3115 s
+rodada 8 | treino 6.1072 s | total 8.2186 s
+rodada 9 | treino 6.1117 s | total 8.2628 s
+rodada 10 | treino 6.1137 s | total 8.2693 s
+MEDIA treino 6.0952 s (desvio 0.1265) | total 8.2440 s (desvio 0.1310)
+================ v1.2-cuda-shared ================
+Binario: bin_tags/v1.2-cuda-shared | repeticoes: 10 | host: compute22
+rodada 1 | treino 0.3947 s | total 2.5407 s
+rodada 2 | treino 0.3931 s | total 2.5414 s
+rodada 3 | treino 0.4174 s | total 2.6286 s
+rodada 4 | treino 0.3927 s | total 2.5412 s
+rodada 5 | treino 0.3931 s | total 2.5142 s
+rodada 6 | treino 0.3924 s | total 2.5373 s
+rodada 7 | treino 0.3915 s | total 2.5447 s
+rodada 8 | treino 0.3918 s | total 2.5491 s
+rodada 9 | treino 0.3917 s | total 2.5165 s
+rodada 10 | treino 0.3919 s | total 2.5430 s
+MEDIA treino 0.3950 s (desvio 0.0079) | total 2.5457 s (desvio 0.0314)
+================ v1.0-cuda-ingenuo ================
+Binario: bin_tags/v1.0-cuda-ingenuo | repeticoes: 3 | host: compute22
+rodada 1 | treino 124.2310 s | total 127.0170 s
+rodada 2 | treino 124.7954 s | total 127.5020 s
+rodada 3 | treino 124.5730 s | total 127.2730 s
+MEDIA treino 124.5331 s (desvio 0.2843) | total 127.2640 s (desvio 0.2426)
