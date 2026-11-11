@@ -1,0 +1,7 @@
+Evidencias do bloco v1.1-cuda-residente (Issue #9)
+
+bench_gpu_residente.txt  job 30335 (compute22, RTX A1000): saida completa, diferencas
+                         para o legado e 10 repeticoes (slurm/gpu.slurm)
+nsys_resumo.txt          job 30336 (compute23): Nsight Systems do treino completo
+                         (slurm/nsys.slurm perfil_residente); API, kernels e copias
+A saida de ./gpu deste bloco e identica a da v1.0 (mesmos kernels).
