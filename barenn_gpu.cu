@@ -84,6 +84,122 @@ __global__ void update_kernel(const float* d_in, const float* d_delta, int n_in,
     if (j == 0) d_b[i] -= taxa * d_delta[i];
 }
 
+// ---------------------------------------------------------------------------
+// Treino de uma época inteira em um único kernel, com os pesos em memória
+// compartilhada. O SGD é serial (cada amostra usa os pesos atualizados pela
+// anterior), então usamos UM bloco: as threads dividem o trabalho de cada
+// amostra e __syncthreads() separa as etapas.
+// ---------------------------------------------------------------------------
+constexpr int OCULTA1 = 32;
+constexpr int OCULTA2 = 16;
+// Passo (número de colunas) de cada linha das matrizes na memória compartilhada.
+constexpr int PASSO1 = entradas;
+constexpr int PASSO2 = OCULTA1;
+constexpr int PASSO3 = OCULTA2;
+
+__global__ void treinar_epoca_kernel(const float* d_imagens, const int* d_rotulos,
+                                     int n, float taxa,
+                                     float* d_w1, float* d_b1, float* d_w2, float* d_b2,
+                                     float* d_w3, float* d_b3, double* d_perda) {
+    __shared__ float w1[OCULTA1 * PASSO1], b1[OCULTA1];
+    __shared__ float w2[OCULTA2 * PASSO2], b2[OCULTA2];
+    __shared__ float w3[classes * PASSO3], b3[classes];
+    __shared__ float x[entradas], a1[OCULTA1], a2[OCULTA2];
+    __shared__ float d1[OCULTA1], d2[OCULTA2], d3[classes];
+    const int t = threadIdx.x;
+
+    // 1) Pesos: memória global -> compartilhada (uma vez por época).
+    for (int k = t; k < OCULTA1 * entradas; k += blockDim.x)
+        w1[(k / entradas) * PASSO1 + k % entradas] = d_w1[k];
+    for (int k = t; k < OCULTA2 * OCULTA1; k += blockDim.x)
+        w2[(k / OCULTA1) * PASSO2 + k % OCULTA1] = d_w2[k];
+    for (int k = t; k < classes * OCULTA2; k += blockDim.x)
+        w3[(k / OCULTA2) * PASSO3 + k % OCULTA2] = d_w3[k];
+    if (t < OCULTA1) b1[t] = d_b1[t];
+    if (t < OCULTA2) b2[t] = d_b2[t];
+    if (t < classes) b3[t] = d_b3[t];
+
+    double perda_total = 0.0;  // usada só pela thread 0
+    for (int amostra = 0; amostra < n; ++amostra) {
+        if (t < entradas) x[t] = d_imagens[amostra * entradas + t];
+        __syncthreads();
+
+        // 2) Forward: uma thread por neurônio (mesma ordem de soma da CPU).
+        if (t < OCULTA1) {
+            float sum = b1[t];
+            for (int j = 0; j < entradas; ++j) sum += x[j] * w1[t * PASSO1 + j];
+            a1[t] = fmaxf(0.0f, sum);
+        }
+        __syncthreads();
+        if (t < OCULTA2) {
+            float sum = b2[t];
+            for (int j = 0; j < OCULTA1; ++j) sum += a1[j] * w2[t * PASSO2 + j];
+            a2[t] = fmaxf(0.0f, sum);
+        }
+        __syncthreads();
+        // Última camada (linear): d3 = escore - alvo = gradiente da perda.
+        if (t < classes) {
+            float sum = b3[t];
+            for (int j = 0; j < OCULTA2; ++j) sum += a2[j] * w3[t * PASSO3 + j];
+            d3[t] = sum - (t == d_rotulos[amostra] ? 1.0f : 0.0f);
+        }
+        __syncthreads();
+
+        // 3) Perda da amostra (thread 0, mesma ordem da função perda da CPU).
+        if (t == 0) {
+            float total = 0.0f;
+            for (int i = 0; i < classes; ++i) total += 0.5f * d3[i] * d3[i];
+            perda_total += total;
+        }
+
+        // 4) Backward: gradientes com os pesos ANTIGOS. A ReLU só deixa passar
+        //    o gradiente onde a ativação é positiva (a > 0 equivale a z > 0).
+        if (t < OCULTA2) {
+            float sum = 0.0f;
+            for (int j = 0; j < classes; ++j) sum += d3[j] * w3[j * PASSO3 + t];
+            d2[t] = sum * (a2[t] > 0.0f ? 1.0f : 0.0f);
+        }
+        __syncthreads();
+        if (t < OCULTA1) {
+            float sum = 0.0f;
+            for (int j = 0; j < OCULTA2; ++j) sum += d2[j] * w2[j * PASSO2 + t];
+            d1[t] = sum * (a1[t] > 0.0f ? 1.0f : 0.0f);
+        }
+        __syncthreads();
+
+        // 5) Atualização SGD: as threads dividem os pesos de cada camada.
+        for (int k = t; k < classes * OCULTA2; k += blockDim.x) {
+            int i = k / OCULTA2, j = k % OCULTA2;
+            w3[i * PASSO3 + j] -= taxa * (d3[i] * a2[j]);
+        }
+        if (t < classes) b3[t] -= taxa * d3[t];
+        for (int k = t; k < OCULTA2 * OCULTA1; k += blockDim.x) {
+            int i = k / OCULTA1, j = k % OCULTA1;
+            w2[i * PASSO2 + j] -= taxa * (d2[i] * a1[j]);
+        }
+        if (t < OCULTA2) b2[t] -= taxa * d2[t];
+        for (int k = t; k < OCULTA1 * entradas; k += blockDim.x) {
+            int i = k / entradas, j = k % entradas;
+            w1[i * PASSO1 + j] -= taxa * (d1[i] * x[j]);
+        }
+        if (t < OCULTA1) b1[t] -= taxa * d1[t];
+        // A próxima amostra só começa com todos os pesos atualizados.
+        __syncthreads();
+    }
+
+    // 6) Pesos atualizados: compartilhada -> global (para a próxima época).
+    for (int k = t; k < OCULTA1 * entradas; k += blockDim.x)
+        d_w1[k] = w1[(k / entradas) * PASSO1 + k % entradas];
+    for (int k = t; k < OCULTA2 * OCULTA1; k += blockDim.x)
+        d_w2[k] = w2[(k / OCULTA1) * PASSO2 + k % OCULTA1];
+    for (int k = t; k < classes * OCULTA2; k += blockDim.x)
+        d_w3[k] = w3[(k / OCULTA2) * PASSO3 + k % OCULTA2];
+    if (t < OCULTA1) d_b1[t] = b1[t];
+    if (t < OCULTA2) d_b2[t] = b2[t];
+    if (t < classes) d_b3[t] = b3[t];
+    if (t == 0) *d_perda = perda_total;
+}
+
 class DenseLayer {
     int in_features;
     int out_features;
@@ -132,6 +248,10 @@ public:
 
     // Recebe e devolve ponteiros da GPU: a saída de uma camada vai direto para
     // a próxima, sem passar pela CPU.
+    // Ponteiros dos parâmetros na GPU (usados pelo kernel de treino).
+    float* pesos_gpu() { return d_w; }
+    float* vies_gpu() { return d_b; }
+
     const float* Forward(const float* d_input) {
         d_last_input = d_input;
         forward_kernel<<<grade(out_features), BLOCO>>>(
@@ -348,8 +468,6 @@ int main(int argc, char** argv) {
         Barenn::DenseLayer l1(Barenn::entradas, 32);
         Barenn::DenseLayer l2(32, 16);
         Barenn::DenseLayer l3(16, Barenn::classes, true);
-        vector<float> gradiente(Barenn::classes);
-        vector<float> escores(Barenn::classes);
         array<double, epocas> perdas{};
 
         // Imagens de treino em um vetor contíguo [amostra][atributo], para
@@ -359,9 +477,14 @@ int main(int argc, char** argv) {
             copy(treino[i].imagem.begin(), treino[i].imagem.end(),
                  imagens.begin() + i * Barenn::entradas);
         }
-        float *d_imagens, *d_escores_grad;
+        vector<int> rotulos(treino.size());
+        for (size_t i = 0; i < treino.size(); ++i) rotulos[i] = treino[i].rotulo;
+        float* d_imagens;
+        int* d_rotulos;
+        double* d_perda;
         Barenn::checar(cudaMalloc(&d_imagens, imagens.size() * sizeof(float)));
-        Barenn::checar(cudaMalloc(&d_escores_grad, Barenn::classes * sizeof(float)));
+        Barenn::checar(cudaMalloc(&d_rotulos, rotulos.size() * sizeof(int)));
+        Barenn::checar(cudaMalloc(&d_perda, sizeof(double)));
 
         // Aquecimento: cria o contexto CUDA fora da medição.
         Barenn::checar(cudaFree(0));
@@ -371,34 +494,25 @@ int main(int argc, char** argv) {
         // A cópia do conjunto de treino para a GPU entra na medição.
         Barenn::checar(cudaMemcpy(d_imagens, imagens.data(), imagens.size() * sizeof(float),
                                   cudaMemcpyHostToDevice));
+        Barenn::checar(cudaMemcpy(d_rotulos, rotulos.data(), rotulos.size() * sizeof(int),
+                                  cudaMemcpyHostToDevice));
         for (int epoca = 0; epoca < epocas; ++epoca) {
+            // Um único lançamento treina a época inteira (1 bloco).
+            Barenn::treinar_epoca_kernel<<<1, Barenn::BLOCO>>>(
+                d_imagens, d_rotulos, static_cast<int>(treino.size()), taxa,
+                l1.pesos_gpu(), l1.vies_gpu(), l2.pesos_gpu(), l2.vies_gpu(),
+                l3.pesos_gpu(), l3.vies_gpu(), d_perda);
+            Barenn::checar(cudaGetLastError());
+            // A cópia síncrona espera o kernel terminar.
             double perda_total = 0;
-            // Uma época percorre todo o conjunto na ordem do arquivo.
-            for (size_t i = 0; i < treino.size(); ++i) {
-                const float* d_x = d_imagens + i * Barenn::entradas;
-                const float* d_escores = l3.Forward(l2.Forward(l1.Forward(d_x)));
-
-                // Só os 10 escores voltam para a CPU, que calcula a perda; só o
-                // gradiente da perda (10 floats) volta para a GPU.
-                Barenn::checar(cudaMemcpy(escores.data(), d_escores,
-                                          Barenn::classes * sizeof(float),
-                                          cudaMemcpyDeviceToHost));
-                perda_total += Barenn::perda(escores, treino[i].rotulo, &gradiente);
-                Barenn::checar(cudaMemcpy(d_escores_grad, gradiente.data(),
-                                          Barenn::classes * sizeof(float),
-                                          cudaMemcpyHostToDevice));
-
-                // Propaga o gradiente da última camada até a primeira.
-                // Cada Backward também atualiza os parâmetros da sua camada.
-                const float* d_grad3 = l3.Backward(d_escores_grad, taxa);
-                const float* d_grad2 = l2.Backward(d_grad3, taxa);
-                l1.Backward(d_grad2, taxa, false);
-            }
+            Barenn::checar(cudaMemcpy(&perda_total, d_perda, sizeof(double),
+                                      cudaMemcpyDeviceToHost));
             perdas[epoca] = perda_total / treino.size();
         }
         const chrono::duration<double> tempo = chrono::steady_clock::now() - inicio;
         cudaFree(d_imagens);
-        cudaFree(d_escores_grad);
+        cudaFree(d_rotulos);
+        cudaFree(d_perda);
 
         // Imprime as métricas e roda a avaliação após encerrar o cronômetro.
         cout << fixed << setprecision(4)
