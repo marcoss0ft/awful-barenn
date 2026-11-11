@@ -1,0 +1,9 @@
+Evidencias do bloco v0.1-cpu-memoria (Issue #3)
+
+comparar_legado_cpu.txt        job 30321 (compute20): legado x cpu no mesmo job, 10 rep. cada
+ablacao_por_commit.txt         job 30315 (compute22): versao de cada commit do bloco, 10 rep. cada
+                               passos/B = refactor (achatar), C = referencias/buffers,
+                               D = sem gradiente da camada 1, E = D + tempos de leitura/avaliacao
+callgrind_*                    perfil da versao final (commit "perf: nao calcula o gradiente...")
+callgrind_por_linha_so_achatado.txt   perfil (so instrucoes) do commit "refactor: achata..."
+saida_cpu_com_tempos.txt       job 30310: saida completa com tempo de leitura e de avaliacao
