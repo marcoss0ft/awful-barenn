@@ -92,10 +92,13 @@ __global__ void update_kernel(const float* d_in, const float* d_delta, int n_in,
 // ---------------------------------------------------------------------------
 constexpr int OCULTA1 = 32;
 constexpr int OCULTA2 = 16;
-// Passo (número de colunas) de cada linha das matrizes na memória compartilhada.
-constexpr int PASSO1 = entradas;
-constexpr int PASSO2 = OCULTA1;
-constexpr int PASSO3 = OCULTA2;
+// Cada linha da matriz na memória compartilhada ganha uma posição extra
+// (passo 65 em vez de 64, 33 em vez de 32, 17 em vez de 16). Sem isso, no
+// forward as 32 threads de um warp leriam w[t * 64 + j], endereços que caem
+// todos no mesmo banco da memória compartilhada (conflito de banco).
+constexpr int PASSO1 = entradas + 1;
+constexpr int PASSO2 = OCULTA1 + 1;
+constexpr int PASSO3 = OCULTA2 + 1;
 
 __global__ void treinar_epoca_kernel(const float* d_imagens, const int* d_rotulos,
                                      int n, float taxa,
