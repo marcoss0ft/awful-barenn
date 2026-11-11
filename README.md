@@ -37,10 +37,10 @@ Todas as versões foram compiladas **a partir das próprias tags** (`scripts/com
 | memória compartilhada + passo 65 | 0,40 s |
 
 ### Leitura dos resultados
-- **CPU.** O ganho veio de **eliminar trabalho**: o gradiente da camada 1 era calculado e descartado, e havia 13 alocações e cópias de vetores por amostra. Instruções caíram 42% e leituras 56% (callgrind). Misses de cache são ≈ 0% antes e depois, porque os pesos (11 KB) cabem no L1.
-- **Paralelismo multicore.** O treino é serial: cada amostra usa os pesos da anterior. OpenMP acelera só leitura (4,7×) e avaliação. O processo fica limitado pela **Lei de Amdahl** (p ≈ 11% → máximo 1,11×). OpenMP dentro do treino fica de 2,3× a 40× **mais lento**, porque ≈ 0,9 µs de trabalho por amostra não pagam 8 barreiras.
-- **GPU.** Na versão ingênua a GPU ficava ociosa ≈ 95% do tempo, com a CPU dentro de `cudaMalloc`/`cudaMemcpy`/`cudaFree` (97% do tempo da API CUDA). As cópias, de 0,9 KB em média, saíam a 0,19 GB/s num PCIe Gen4 ×16: latência, não banda. Manter os dados na GPU deu 20×. Fundir a época num kernel e usar memória compartilhada deu mais 15×.
-- **Por que a GPU não vence a CPU aqui.** O SGD por amostra deixa só ≈ 32 threads úteis em 1 de 18 SMs (ocupação teórica de 8,3% de um SM e 0,46% da GPU), e cada neurônio é uma cadeia serial de 64 FMAs. O kernel roda a ≈ 5,9 GFLOP/s, cerca de 1% do pico de um SM: é limitado por **latência**, não por cálculo nem por banda. A CPU (5,5 GHz, L1 de ≈ 5 ciclos) percorre essa cadeia mais rápido. A GPU só compensaria com mais trabalho independente por passo (redes mais largas ou mini-batch, que muda o algoritmo).
+- **CPU.** O ganho veio de **eliminar trabalho**: o gradiente da camada 1 era calculado e descartado, e havia 13 alocações por amostra. Instruções −42% e leituras −56% (callgrind). Miss de cache ≈ 0% antes e depois, porque os pesos (11 KB) cabem no L1.
+- **Multicore.** O treino é serial, então o OpenMP só acelera leitura (4,7×) e avaliação, e o processo fica preso na **Lei de Amdahl** (p ≈ 11% → 1,11×). OpenMP dentro do treino fica de 2,3× a 40× **mais lento**.
+- **GPU.** Na versão ingênua a GPU ficava ociosa ≈ 95% do tempo (97% da API em `cudaMalloc`/`cudaMemcpy`/`cudaFree`; cópias de 0,9 KB a 0,19 GB/s num PCIe Gen4 ×16: latência, não banda). Manter os dados na GPU deu 20×. Um kernel por época com memória compartilhada deu mais 15×.
+- **Por que a GPU não vence a CPU.** O SGD por amostra deixa ≈ 32 threads úteis em 1 de 18 SMs (8,3% de um SM, 0,46% da GPU), numa cadeia serial de 64 FMAs por neurônio. O kernel roda a ≈ 5,9 GFLOP/s, ≈ 1% do pico de um SM: é limitado por **latência**. A GPU só compensaria com rede mais larga ou mini-batch, que muda o algoritmo.
 
 ## Índice dos blocos lógicos
 
@@ -73,11 +73,7 @@ Uma tag específica: `git checkout <tag>`, depois `chmod +x scripts/*.sh` (até 
 - `v0.1` e `v0.2` adicionam `cpu`;
 - a partir de `v1.0`, também `gpu`.
 
-Observações do ambiente:
-- os nós de computação não compilam (faltam os headers da glibc), por isso a compilação é no nó de login;
-- os jobs exportam `LD_LIBRARY_PATH` para a `libstdc++` do gcc 14;
-- `valgrind` só existe no nó de login (`scripts/profile_cpu.sh`);
-- o Nsight Compute está bloqueado (`ERR_NVGPUCTRPERM`), por isso a ocupação foi calculada a partir da configuração de lançamento.
+No Franky: compile no nó de login (os nós de computação não têm os headers da glibc nem `valgrind`). O Nsight Compute está bloqueado (`ERR_NVGPUCTRPERM`), então a ocupação foi calculada pela configuração de lançamento.
 
 ---
 
