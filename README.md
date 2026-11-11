@@ -1,3 +1,82 @@
+# APS 2: otimização e migração para CUDA do Barenn (sumário executivo)
+
+Rede densa 64 → 32 → 16 → 10 treinada por SGD **uma amostra por vez** (`optdigits.tra`, 3823 imagens × 51 épocas; avaliação em `optdigits.tes`, 1797 imagens). Todas as versões estão no mesmo repositório:
+
+| Arquivo | O que é |
+|---|---|
+| `barenn.cpp` | código legado, intacto |
+| `barenn_cpu.cpp` | versão CPU otimizada |
+| `barenn_gpu.cu` | versão CUDA |
+
+Cada degrau de desempenho é uma tag anotada ligada a uma Issue.
+
+## Tabela consolidada
+
+Todas as versões foram compiladas **a partir das próprias tags** (`scripts/compilar_tags.sh`) e medidas **no mesmo job e no mesmo nó** (`slurm/tabela_final.slurm`, job 30340).
+- **Máquina:** Franky `compute22`, Intel Core i9-14900 (8 núcleos P alocados) + NVIDIA RTX A1000 (Ampere cc 8.6, 18 SMs).
+- **Compiladores:** `g++ -O3` (14.2.0) e `nvcc -O3` (CUDA 12.8.1).
+- **Repetições:** 10 por versão (3 para a CUDA inicial). Log em [`resultados/final/tabela_final.txt`](resultados/final/tabela_final.txt).
+
+| Versão (tag) | Técnica principal | Treino (média ± desvio) | Speedup do treino vs legado | Processo completo | Saída |
+|---|---|---|---|---|---|
+| **Baseline legado** ([`v0.0-baseline`](../../tree/v0.0-baseline)) | código original, `g++ -O3` | 0,3723 s ± 0,0013 | 1,00× | 0,4003 s | referência |
+| CPU: memória ([`v0.1-cpu-memoria`](../../tree/v0.1-cpu-memoria)) | pesos contíguos, sem cópias/`malloc` por amostra, sem gradiente descartado | 0,2219 s ± 0,0022 | 1,68× | 0,2498 s | idêntica |
+| **CPU otimizada** ([`v0.2-cpu-openmp`](../../tree/v0.2-cpu-openmp)) | + OpenMP (8 threads) na leitura e na avaliação | **0,2218 s ± 0,0021** | **1,68×** | **0,2319 s (1,73×)** | idêntica |
+| **CUDA inicial** ([`v1.0-cuda-ingenuo`](../../tree/v1.0-cuda-ingenuo)) | kernels por camada, `cudaMalloc`/`cudaMemcpy` a cada chamada | 124,53 s ± 0,28 | 0,003× | 127,26 s | equivalente* |
+| CUDA residente ([`v1.1-cuda-residente`](../../tree/v1.1-cuda-residente)) | dados e parâmetros residentes na GPU | 6,10 s ± 0,13 | 0,06× | 8,24 s | equivalente* |
+| **CUDA otimizado** ([`v1.2-cuda-shared`](../../tree/v1.2-cuda-shared)) | 1 kernel por época, pesos em **memória compartilhada** com passo anti-conflito de banco | **0,3950 s ± 0,0079** | 0,94× | 2,55 s | equivalente* |
+
+\* Perdas iguais até a 3ª casa. Na 4ª casa diferem nas épocas 41/46 (0,0156/0,0144 contra 0,0155/0,0145), e a acurácia é 95,6% contra 95,5% (1 imagem). O PTX da GPU usa FMA (`fma.rn.f32`, um arredondamento) e o binário da CPU não (`mulss` + `addss`, dois arredondamentos). As três versões CUDA dão exatamente a mesma saída entre si. Detalhes na [Issue #7](../../issues/7).
+
+**Na GPU**, a evolução foi 124,5 s → 6,1 s → 0,40 s (**315×** da CUDA inicial para a otimizada). A ablação no mesmo kernel ([Issue #11](../../issues/11)):
+
+| Variante do kernel | Treino |
+|---|---|
+| pesos na memória global | 0,93 s |
+| pesos em memória compartilhada | 0,54 s |
+| memória compartilhada + passo 65 | 0,40 s |
+
+### Leitura dos resultados
+- **CPU.** O ganho veio de **eliminar trabalho**: o gradiente da camada 1 era calculado e descartado, e havia ≈ 15 `malloc`/cópias por amostra. Instruções caíram 42% e leituras 56% (callgrind). Misses de cache são ≈ 0% antes e depois, porque os pesos (11 KB) cabem no L1.
+- **Paralelismo multicore.** O treino é serial: cada amostra usa os pesos da anterior. OpenMP acelera só leitura (4,7×) e avaliação. O processo fica limitado pela **Lei de Amdahl** (p ≈ 11% → máximo 1,11×). OpenMP dentro do treino fica de 2,3× a 40× **mais lento**, porque ≈ 0,9 µs de trabalho por amostra não pagam 8 barreiras.
+- **GPU.** A versão ingênua passava ≈ 95% do tempo em `cudaMalloc`/`cudaMemcpy`/`cudaFree`, com cópias de 0,9 KB a 0,19 GB/s num PCIe Gen4 ×16: latência, não banda. Manter os dados na GPU deu 20×. Fundir a época num kernel e usar memória compartilhada deu mais 15×.
+- **Por que a GPU não vence a CPU aqui.** O SGD por amostra deixa só ≈ 32 threads úteis em 1 de 18 SMs (ocupação teórica de 8,3% de um SM e 0,46% da GPU), e cada neurônio é uma cadeia serial de 64 FMAs. O kernel roda a ≈ 5,9 GFLOP/s, cerca de 1% do pico de um SM: é limitado por **latência**, não por cálculo nem por banda. A CPU (5,5 GHz, L1 de ≈ 5 ciclos) percorre essa cadeia mais rápido. A GPU só compensaria com mais trabalho independente por passo (redes mais largas ou mini-batch, que muda o algoritmo).
+
+## Índice dos blocos lógicos
+
+| # | Bloco | Issue (hipótese, dados e discussão) | Pull Request | Tag |
+|---|---|---|---|---|
+| 0 | Baseline reprodutível e perfil do legado | [#1](../../issues/1) | [#2](../../pull/2) | [`v0.0-baseline`](../../releases/tag/v0.0-baseline) |
+| 1 | CPU: layout contíguo, sem cópias e sem trabalho descartado | [#3](../../issues/3) | [#4](../../pull/4) | [`v0.1-cpu-memoria`](../../releases/tag/v0.1-cpu-memoria) |
+| 2 | CPU: OpenMP na leitura e na avaliação (+ experimento negativo no treino) | [#5](../../issues/5) | [#6](../../pull/6) | [`v0.2-cpu-openmp`](../../releases/tag/v0.2-cpu-openmp) |
+| 3 | GPU: migração funcional para CUDA | [#7](../../issues/7) | [#8](../../pull/8) | [`v1.0-cuda-ingenuo`](../../releases/tag/v1.0-cuda-ingenuo) |
+| 4 | GPU: dados residentes na GPU | [#9](../../issues/9) | [#10](../../pull/10) | [`v1.1-cuda-residente`](../../releases/tag/v1.1-cuda-residente) |
+| 5 | GPU: kernel por época + memória compartilhada | [#11](../../issues/11) | [#12](../../pull/12) | [`v1.2-cuda-shared`](../../releases/tag/v1.2-cuda-shared) |
+| 6 | Relatório: tabela consolidada e este índice | [#13](../../issues/13) | [#14](../../pull/14) | [`v1.3-relatorio`](../../releases/tag/v1.3-relatorio) |
+
+As evidências brutas de cada bloco (benchmarks, callgrind, Nsight Systems) estão em [`resultados/`](resultados/).
+
+## Como reproduzir (cluster Franky)
+
+```bash
+git clone https://github.com/marcoss0ft/awful-barenn.git && cd awful-barenn
+git checkout <tag>                        # qualquer tag da tabela
+module load cuda/12.8.1                   # compile no nó de login
+make legado cpu gpu
+sbatch slurm/comparar.slurm 10 ./legado ./cpu ./gpu      # valida e mede no mesmo job
+scripts/compilar_tags.sh && sbatch slurm/tabela_final.slurm   # tabela acima (a partir da v1.3)
+```
+
+Observações do ambiente:
+- os nós de computação não compilam (faltam os headers da glibc), por isso a compilação é no nó de login;
+- os jobs exportam `LD_LIBRARY_PATH` para a `libstdc++` do gcc 14;
+- `valgrind` só existe no nó de login (`scripts/profile_cpu.sh`);
+- o Nsight Compute está bloqueado (`ERR_NVGPUCTRPERM`), por isso a ocupação foi calculada a partir da configuração de lançamento.
+
+---
+
+# Enunciado original
+
 # Projeto Barenn: O Legado, a Sobrevivência e o Salto para a GPU
 
 Era uma segunda-feira aparentemente tranquila quando a demanda chegou à sua mesa. A liderança técnica se aproximou com um sorriso contido e soltou aquela frase clássica que faz qualquer engenheiro gelar por dentro:
