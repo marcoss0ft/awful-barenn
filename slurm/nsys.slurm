@@ -9,7 +9,7 @@
 #SBATCH --time=00:15:00
 
 # Uso: sbatch slurm/nsys.slurm <nome_do_relatorio> [segundos]
-# Linha do tempo CUDA com o Nsight Systems (aula profile-nvidia). Com [segundos]
+# Linha do tempo CUDA com o Nsight Systems. Com [segundos]
 # a captura para depois desse tempo (a versão ingênua geraria um relatório enorme).
 # O resumo em texto (nsys stats) vai para o .out; o .nsys-rep abre no nsys-ui.
 module load cuda/12.8.1
