@@ -1,0 +1,33 @@
+# Binários gerados pelo Makefile
+legado
+legado_O0
+legado_prof
+cpu
+cpu_prof
+gpu
+omp_no_treino
+*.o
+*.out.tmp
+
+# Relatórios brutos e pesados dos profilers (os resumos em texto ficam em resultados/)
+resultados/**/*.nsys-rep
+resultados/**/*.sqlite
+resultados/**/*.qdrep
+resultados/**/callgrind.*.out
+resultados/*.out
+resultados/*.txt
+resultados/*.log
+resultados/*.stdout
+gmon.out
+
+# Chaves e credenciais nunca entram no repositório
+id_rsa*
+*.pem
+*.key
+.ssh/
+
+# Arquivos de sistema/editor
+.vscode/
+.idea/
+*.swp
+.DS_Store
