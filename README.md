@@ -19,16 +19,16 @@ Todas as versões foram compiladas **a partir das próprias tags** (`scripts/com
 
 | Versão (tag) | Técnica principal | Treino (média ± desvio) | Speedup do treino vs legado | Processo completo | Saída |
 |---|---|---|---|---|---|
-| **Baseline legado** ([`v0.0-baseline`](../../tree/v0.0-baseline)) | código original, `g++ -O3` | 0,3723 s ± 0,0013 | 1,00× | 0,4003 s | referência |
-| CPU: memória ([`v0.1-cpu-memoria`](../../tree/v0.1-cpu-memoria)) | pesos contíguos, sem cópias/`malloc` por amostra, sem gradiente descartado | 0,2219 s ± 0,0022 | 1,68× | 0,2498 s | idêntica |
-| **CPU otimizada** ([`v0.2-cpu-openmp`](../../tree/v0.2-cpu-openmp)) | + OpenMP (8 threads) na leitura e na avaliação | **0,2218 s ± 0,0021** | **1,68×** | **0,2319 s (1,73×)** | idêntica |
-| **CUDA inicial** ([`v1.0-cuda-ingenuo`](../../tree/v1.0-cuda-ingenuo)) | kernels por camada, `cudaMalloc`/`cudaMemcpy` a cada chamada | 124,53 s ± 0,28 | 0,003× | 127,26 s | equivalente* |
-| CUDA residente ([`v1.1-cuda-residente`](../../tree/v1.1-cuda-residente)) | dados e parâmetros residentes na GPU | 6,10 s ± 0,13 | 0,06× | 8,24 s | equivalente* |
-| **CUDA otimizado** ([`v1.2-cuda-shared`](../../tree/v1.2-cuda-shared)) | 1 kernel por época, pesos em **memória compartilhada** com passo anti-conflito de banco | **0,3950 s ± 0,0079** | 0,94× | 2,55 s | equivalente* |
+| **Baseline legado** ([`v0.0-baseline`](https://github.com/marcoss0ft/awful-barenn/tree/v0.0-baseline)) | código original, `g++ -O3` | 0,3723 s ± 0,0013 | 1,00× | 0,4003 s | referência |
+| CPU: memória ([`v0.1-cpu-memoria`](https://github.com/marcoss0ft/awful-barenn/tree/v0.1-cpu-memoria)) | pesos contíguos, sem cópias/`malloc` por amostra, sem gradiente descartado | 0,2219 s ± 0,0022 | 1,68× | 0,2498 s | idêntica |
+| **CPU otimizada** ([`v0.2-cpu-openmp`](https://github.com/marcoss0ft/awful-barenn/tree/v0.2-cpu-openmp)) | + OpenMP (8 threads) na leitura e na avaliação | **0,2218 s ± 0,0021** | **1,68×** | **0,2319 s (1,73×)** | idêntica |
+| **CUDA inicial** ([`v1.0-cuda-ingenuo`](https://github.com/marcoss0ft/awful-barenn/tree/v1.0-cuda-ingenuo)) | kernels por camada, `cudaMalloc`/`cudaMemcpy` a cada chamada | 124,53 s ± 0,28 | 0,003× | 127,26 s | equivalente* |
+| CUDA residente ([`v1.1-cuda-residente`](https://github.com/marcoss0ft/awful-barenn/tree/v1.1-cuda-residente)) | dados e parâmetros residentes na GPU | 6,10 s ± 0,13 | 0,06× | 8,24 s | equivalente* |
+| **CUDA otimizado** ([`v1.2-cuda-shared`](https://github.com/marcoss0ft/awful-barenn/tree/v1.2-cuda-shared)) | 1 kernel por época, pesos em **memória compartilhada** com passo anti-conflito de banco | **0,3950 s ± 0,0079** | 0,94× | 2,55 s | equivalente* |
 
-\* Perdas iguais até a 3ª casa. Na 4ª casa diferem nas épocas 41/46 (0,0156/0,0144 contra 0,0155/0,0145), e a acurácia é 95,6% contra 95,5% (1 imagem). O PTX da GPU usa FMA (`fma.rn.f32`, um arredondamento) e o binário da CPU não (`mulss` + `addss`, dois arredondamentos). As três versões CUDA dão exatamente a mesma saída entre si. Detalhes na [Issue #7](../../issues/7).
+\* Perdas iguais até a 3ª casa. Na 4ª casa diferem nas épocas 41/46 (0,0156/0,0144 contra 0,0155/0,0145), e a acurácia é 95,6% contra 95,5% (1 imagem). O PTX da GPU usa FMA (`fma.rn.f32`, um arredondamento) e o binário da CPU não (`mulss` + `addss`, dois arredondamentos). As três versões CUDA dão exatamente a mesma saída entre si. Detalhes na [Issue #7](https://github.com/marcoss0ft/awful-barenn/issues/7).
 
-**Na GPU**, a evolução foi 124,5 s → 6,1 s → 0,40 s (**315×** da CUDA inicial para a otimizada). A ablação no mesmo kernel ([Issue #11](../../issues/11)):
+**Na GPU**, a evolução foi 124,5 s → 6,1 s → 0,40 s (**315×** da CUDA inicial para a otimizada). A ablação no mesmo kernel ([Issue #11](https://github.com/marcoss0ft/awful-barenn/issues/11)):
 
 | Variante do kernel | Treino |
 |---|---|
@@ -46,13 +46,13 @@ Todas as versões foram compiladas **a partir das próprias tags** (`scripts/com
 
 | # | Bloco | Issue (hipótese, dados e discussão) | Pull Request | Tag |
 |---|---|---|---|---|
-| 0 | Baseline reprodutível e perfil do legado | [#1](../../issues/1) | [#2](../../pull/2) | [`v0.0-baseline`](../../releases/tag/v0.0-baseline) |
-| 1 | CPU: layout contíguo, sem cópias e sem trabalho descartado | [#3](../../issues/3) | [#4](../../pull/4) | [`v0.1-cpu-memoria`](../../releases/tag/v0.1-cpu-memoria) |
-| 2 | CPU: OpenMP na leitura e na avaliação (+ experimento negativo no treino) | [#5](../../issues/5) | [#6](../../pull/6) | [`v0.2-cpu-openmp`](../../releases/tag/v0.2-cpu-openmp) |
-| 3 | GPU: migração funcional para CUDA | [#7](../../issues/7) | [#8](../../pull/8) | [`v1.0-cuda-ingenuo`](../../releases/tag/v1.0-cuda-ingenuo) |
-| 4 | GPU: dados residentes na GPU | [#9](../../issues/9) | [#10](../../pull/10) | [`v1.1-cuda-residente`](../../releases/tag/v1.1-cuda-residente) |
-| 5 | GPU: kernel por época + memória compartilhada | [#11](../../issues/11) | [#12](../../pull/12) | [`v1.2-cuda-shared`](../../releases/tag/v1.2-cuda-shared) |
-| 6 | Relatório: tabela consolidada e este índice | [#13](../../issues/13) | [#14](../../pull/14) | [`v1.3-relatorio`](../../releases/tag/v1.3-relatorio) |
+| 0 | Baseline reprodutível e perfil do legado | [#1](https://github.com/marcoss0ft/awful-barenn/issues/1) | [#2](https://github.com/marcoss0ft/awful-barenn/pull/2) | [`v0.0-baseline`](https://github.com/marcoss0ft/awful-barenn/releases/tag/v0.0-baseline) |
+| 1 | CPU: layout contíguo, sem cópias e sem trabalho descartado | [#3](https://github.com/marcoss0ft/awful-barenn/issues/3) | [#4](https://github.com/marcoss0ft/awful-barenn/pull/4) | [`v0.1-cpu-memoria`](https://github.com/marcoss0ft/awful-barenn/releases/tag/v0.1-cpu-memoria) |
+| 2 | CPU: OpenMP na leitura e na avaliação (+ experimento negativo no treino) | [#5](https://github.com/marcoss0ft/awful-barenn/issues/5) | [#6](https://github.com/marcoss0ft/awful-barenn/pull/6) | [`v0.2-cpu-openmp`](https://github.com/marcoss0ft/awful-barenn/releases/tag/v0.2-cpu-openmp) |
+| 3 | GPU: migração funcional para CUDA | [#7](https://github.com/marcoss0ft/awful-barenn/issues/7) | [#8](https://github.com/marcoss0ft/awful-barenn/pull/8) | [`v1.0-cuda-ingenuo`](https://github.com/marcoss0ft/awful-barenn/releases/tag/v1.0-cuda-ingenuo) |
+| 4 | GPU: dados residentes na GPU | [#9](https://github.com/marcoss0ft/awful-barenn/issues/9) | [#10](https://github.com/marcoss0ft/awful-barenn/pull/10) | [`v1.1-cuda-residente`](https://github.com/marcoss0ft/awful-barenn/releases/tag/v1.1-cuda-residente) |
+| 5 | GPU: kernel por época + memória compartilhada | [#11](https://github.com/marcoss0ft/awful-barenn/issues/11) | [#12](https://github.com/marcoss0ft/awful-barenn/pull/12) | [`v1.2-cuda-shared`](https://github.com/marcoss0ft/awful-barenn/releases/tag/v1.2-cuda-shared) |
+| 6 | Relatório: tabela consolidada e este índice | [#13](https://github.com/marcoss0ft/awful-barenn/issues/13) | [#14](https://github.com/marcoss0ft/awful-barenn/pull/14) | [`v1.3-relatorio`](https://github.com/marcoss0ft/awful-barenn/releases/tag/v1.3-relatorio) |
 
 As evidências brutas de cada bloco (benchmarks, callgrind, Nsight Systems) estão em [`resultados/`](resultados/).
 
