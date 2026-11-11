@@ -1,0 +1,79 @@
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0156
+Epoca 46/51 | perda media 0.0144
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 0.4121 s
+
+AVALIACAO FINAL
+Acuracia 95.6% | 1718 acertos em 1797 imagens
+Perda media 0.0438
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            8
+       3         2            6
+       8         1            6
+Tempo de leitura 0.0241 s
+Tempo de avaliacao 0.0342 s
+Collecting data...
+Generating '/tmp/nsys-report-9d54.qdstrm'
+[1/1] [0%                          ] perfil_shared.nsys-rep[1/1] [0%                          ] perfil_shared.nsys-rep[1/1] [5%                          ] perfil_shared.nsys-rep[1/1] [6%                          ] perfil_shared.nsys-rep[1/1] [=================74%        ] perfil_shared.nsys-rep[1/1] [==================76%       ] perfil_shared.nsys-rep[1/1] [========================100%] perfil_shared.nsys-rep[1/1] [========================100%] perfil_shared.nsys-rep
+Generated:
+    /home/marcosarpc/scratch/aps2/repo/resultados/perfil_shared.nsys-rep
+Generating SQLite file resultados/perfil_shared.sqlite from resultados/perfil_shared.nsys-rep
+Processing [resultados/perfil_shared.sqlite] with [/opt/ohpc/pub/spack/opt/spack/linux-skylake/cuda-12.8.1-hk7c4l6fpeucmtbivmr7kn73dnkarzyt/nsight-systems-2024.6.2/host-linux-x64/reports/cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)    Med (ns)  Min (ns)   Max (ns)   StdDev (ns)            Name         
+ --------  ---------------  ---------  -----------  --------  --------  ----------  ------------  ----------------------
+     83.8      430,575,733      3,653    117,869.1  12,561.0     1,039   9,579,284     939,152.5  cudaMemcpy            
+     13.3       68,526,555         22  3,114,843.4   1,400.0       918  68,494,145  14,602,671.8  cudaMalloc            
+      2.8       14,564,636      5,442      2,676.3   1,322.0     1,187   7,064,888      95,752.7  cudaLaunchKernel      
+      0.0           90,676         23      3,942.4   1,281.0       449      56,715      11,532.3  cudaFree              
+      0.0              716          1        716.0     716.0       716         716           0.0  cuModuleGetLoadingMode
+
+Processing [resultados/perfil_shared.sqlite] with [/opt/ohpc/pub/spack/opt/spack/linux-skylake/cuda-12.8.1-hk7c4l6fpeucmtbivmr7kn73dnkarzyt/nsight-systems-2024.6.2/host-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances   Avg (ns)     Med (ns)    Min (ns)   Max (ns)   StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  -----------  -----------  ---------  ---------  -----------  ----------------------------------------------------------------------------------------------------
+     97.5      403,726,622         51  7,916,208.3  8,909,821.0  6,762,204  9,565,651  1,094,687.2  Barenn::treinar_epoca_kernel(const float *, const int *, int, float, float *, float *, float *, flo…
+      2.5       10,553,314      5,391      1,957.6      1,632.0      1,151      3,104        803.9  Barenn::forward_kernel(const float *, const float *, const float *, int, int, bool, float *, float …
+
+Processing [resultados/perfil_shared.sqlite] with [/opt/ohpc/pub/spack/opt/spack/linux-skylake/cuda-12.8.1-hk7c4l6fpeucmtbivmr7kn73dnkarzyt/nsight-systems-2024.6.2/host-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+
+ ** CUDA GPU MemOps Summary (by Time) (cuda_gpu_mem_time_sum):
+
+ Time (%)  Total Time (ns)  Count  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)           Operation          
+ --------  ---------------  -----  --------  --------  --------  --------  -----------  ----------------------------
+     53.7        1,451,885  1,848     785.7     768.0       767     1,408         42.2  [CUDA memcpy Device-to-Host]
+     46.3        1,253,556  1,805     694.5     672.0       288    78,495      1,833.9  [CUDA memcpy Host-to-Device]
+
+Processing [resultados/perfil_shared.sqlite] with [/opt/ohpc/pub/spack/opt/spack/linux-skylake/cuda-12.8.1-hk7c4l6fpeucmtbivmr7kn73dnkarzyt/nsight-systems-2024.6.2/host-linux-x64/reports/cuda_gpu_mem_size_sum.py]... 
+
+ ** CUDA GPU MemOps Summary (by Size) (cuda_gpu_mem_size_sum):
+
+ Total (MB)  Count  Avg (MB)  Med (MB)  Min (MB)  Max (MB)  StdDev (MB)           Operation          
+ ----------  -----  --------  --------  --------  --------  -----------  ----------------------------
+      1.465  1,805     0.001     0.000     0.000     0.979        0.023  [CUDA memcpy Host-to-Device]
+      0.072  1,848     0.000     0.000     0.000     0.000        0.000  [CUDA memcpy Device-to-Host]
+

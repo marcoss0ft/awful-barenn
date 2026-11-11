@@ -1,0 +1,39 @@
+compute22
+NVIDIA RTX A1000
+== As tres variantes devem dar a mesma saida ==
+gpu_sem_padding: saida identica a ./gpu
+gpu_pesos_global: saida identica a ./gpu
+gpu 0.4273
+gpu_sem_padding 0.5425
+gpu_pesos_global 0.9323
+gpu 0.3945
+gpu_sem_padding 0.5430
+gpu_pesos_global 0.9324
+gpu 0.3947
+gpu_sem_padding 0.5426
+gpu_pesos_global 0.9319
+gpu 0.3947
+gpu_sem_padding 0.5426
+gpu_pesos_global 0.9320
+gpu 0.3950
+gpu_sem_padding 0.5425
+gpu_pesos_global 0.9329
+gpu 0.3946
+gpu_sem_padding 0.5427
+gpu_pesos_global 0.9324
+gpu 0.3939
+gpu_sem_padding 0.5410
+gpu_pesos_global 0.9305
+gpu 0.4162
+gpu_sem_padding 0.5400
+gpu_pesos_global 0.9295
+gpu 0.3922
+gpu_sem_padding 0.5399
+gpu_pesos_global 0.9298
+gpu 0.3921
+gpu_sem_padding 0.5402
+gpu_pesos_global 0.9294
+== Medias (10 rodadas intercaladas) ==
+gpu_pesos_global  treino 0.9313 s (desvio 0.0014)
+gpu_sem_padding   treino 0.5417 s (desvio 0.0013)
+gpu               treino 0.3995 s (desvio 0.0120)

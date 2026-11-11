@@ -21,6 +21,13 @@ cpu: barenn_cpu.cpp
 gpu: barenn_gpu.cu
 	$(NVCC) $(NVCCFLAGS) barenn_gpu.cu -o gpu
 
+# Experimentos de controle do kernel com memória compartilhada
+gpu_sem_padding: experimentos/gpu_sem_padding.cu
+	$(NVCC) $(NVCCFLAGS) experimentos/gpu_sem_padding.cu -o gpu_sem_padding
+
+gpu_pesos_global: experimentos/gpu_pesos_global.cu
+	$(NVCC) $(NVCCFLAGS) experimentos/gpu_pesos_global.cu -o gpu_pesos_global
+
 # Experimento (resultado negativo): OpenMP dentro do laço de treino
 omp_no_treino: experimentos/omp_no_treino.cpp
 	$(CXX) $(CXXFLAGS) -fopenmp experimentos/omp_no_treino.cpp -o omp_no_treino
@@ -37,6 +44,6 @@ cpu_prof: barenn_cpu.cpp
 	$(CXX) $(CXXFLAGS) -fopenmp -g barenn_cpu.cpp -o cpu_prof
 
 clean:
-	rm -f legado legado_O0 legado_prof cpu cpu_prof omp_no_treino gpu
+	rm -f legado legado_O0 legado_prof cpu cpu_prof omp_no_treino gpu gpu_sem_padding gpu_pesos_global
 
 .PHONY: all clean
