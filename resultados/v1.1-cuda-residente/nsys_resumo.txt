@@ -1,0 +1,81 @@
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0156
+Epoca 46/51 | perda media 0.0144
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 7.5291 s
+
+AVALIACAO FINAL
+Acuracia 95.6% | 1718 acertos em 1797 imagens
+Perda media 0.0438
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            8
+       3         2            6
+       8         1            6
+Tempo de leitura 0.0242 s
+Tempo de avaliacao 0.0336 s
+Collecting data...
+Generating '/tmp/nsys-report-5ac0.qdstrm'
+[1/1] [0%                          ] perfil_residente.nsys-rep[1/1] [0%                          ] perfil_residente.nsys-rep[1/1] [=15%                        ] perfil_residente.nsys-rep[1/1] [13%                         ] perfil_residente.nsys-rep[1/1] [11%                         ] perfil_residente.nsys-rep[1/1] [10%                         ] perfil_residente.nsys-rep[1/1] [==19%                       ] perfil_residente.nsys-rep[1/1] [=17%                        ] perfil_residente.nsys-rep[1/1] [=15%                        ] perfil_residente.nsys-rep[1/1] [14%                         ] perfil_residente.nsys-rep[1/1] [13%                         ] perfil_residente.nsys-rep[1/1] [12%                         ] perfil_residente.nsys-rep[1/1] [11%                         ] perfil_residente.nsys-rep[1/1] [10%                         ] perfil_residente.nsys-rep[1/1] [9%                          ] perfil_residente.nsys-rep[1/1] [8%                          ] perfil_residente.nsys-rep[1/1] [7%                          ] perfil_residente.nsys-rep[1/1] [6%                          ] perfil_residente.nsys-rep[1/1] [5%                          ] perfil_residente.nsys-rep[1/1] [0%                          ] perfil_residente.nsys-rep[1/1] [5%                          ] perfil_residente.nsys-rep[1/1] [6%                          ] perfil_residente.nsys-rep[1/1] [7%                          ] perfil_residente.nsys-rep[1/1] [8%                          ] perfil_residente.nsys-rep[1/1] [9%                          ] perfil_residente.nsys-rep[1/1] [10%                         ] perfil_residente.nsys-rep[1/1] [11%                         ] perfil_residente.nsys-rep[1/1] [12%                         ] perfil_residente.nsys-rep[1/1] [13%                         ] perfil_residente.nsys-rep[1/1] [14%                         ] perfil_residente.nsys-rep[1/1] [=15%                        ] perfil_residente.nsys-rep[1/1] [=16%                        ] perfil_residente.nsys-rep[1/1] [=17%                        ] perfil_residente.nsys-rep[1/1] [==18%                       ] perfil_residente.nsys-rep[1/1] [==19%                       ] perfil_residente.nsys-rep[1/1] [==20%                       ] perfil_residente.nsys-rep[1/1] [==21%                       ] perfil_residente.nsys-rep[1/1] [===22%                      ] perfil_residente.nsys-rep[1/1] [===23%                      ] perfil_residente.nsys-rep[1/1] [===24%                      ] perfil_residente.nsys-rep[1/1] [====25%                     ] perfil_residente.nsys-rep[1/1] [====26%                     ] perfil_residente.nsys-rep[1/1] [====27%                     ] perfil_residente.nsys-rep[1/1] [====28%                     ] perfil_residente.nsys-rep[1/1] [=====29%                    ] perfil_residente.nsys-rep[1/1] [=====30%                    ] perfil_residente.nsys-rep[1/1] [=====31%                    ] perfil_residente.nsys-rep[1/1] [=====32%                    ] perfil_residente.nsys-rep[1/1] [======33%                   ] perfil_residente.nsys-rep[1/1] [======34%                   ] perfil_residente.nsys-rep[1/1] [======35%                   ] perfil_residente.nsys-rep[1/1] [=======36%                  ] perfil_residente.nsys-rep[1/1] [=======37%                  ] perfil_residente.nsys-rep[1/1] [=======38%                  ] perfil_residente.nsys-rep[1/1] [=======39%                  ] perfil_residente.nsys-rep[1/1] [========40%                 ] perfil_residente.nsys-rep[1/1] [========41%                 ] perfil_residente.nsys-rep[1/1] [========42%                 ] perfil_residente.nsys-rep[1/1] [=========43%                ] perfil_residente.nsys-rep[1/1] [=========44%                ] perfil_residente.nsys-rep[1/1] [=========45%                ] perfil_residente.nsys-rep[1/1] [=========46%                ] perfil_residente.nsys-rep[1/1] [==========47%               ] perfil_residente.nsys-rep[1/1] [==========48%               ] perfil_residente.nsys-rep[1/1] [==========49%               ] perfil_residente.nsys-rep[1/1] [===========50%              ] perfil_residente.nsys-rep[1/1] [===========51%              ] perfil_residente.nsys-rep[1/1] [===========52%              ] perfil_residente.nsys-rep[1/1] [===========53%              ] perfil_residente.nsys-rep[1/1] [============54%             ] perfil_residente.nsys-rep[1/1] [============55%             ] perfil_residente.nsys-rep[1/1] [============56%             ] perfil_residente.nsys-rep[1/1] [============57%             ] perfil_residente.nsys-rep[1/1] [=============58%            ] perfil_residente.nsys-rep[1/1] [=============59%            ] perfil_residente.nsys-rep[1/1] [=============60%            ] perfil_residente.nsys-rep[1/1] [==============61%           ] perfil_residente.nsys-rep[1/1] [==============62%           ] perfil_residente.nsys-rep[1/1] [==============63%           ] perfil_residente.nsys-rep[1/1] [==============64%           ] perfil_residente.nsys-rep[1/1] [===============65%          ] perfil_residente.nsys-rep[1/1] [===============66%          ] perfil_residente.nsys-rep[1/1] [===============67%          ] perfil_residente.nsys-rep[1/1] [================68%         ] perfil_residente.nsys-rep[1/1] [================69%         ] perfil_residente.nsys-rep[1/1] [================70%         ] perfil_residente.nsys-rep[1/1] [================71%         ] perfil_residente.nsys-rep[1/1] [=================72%        ] perfil_residente.nsys-rep[1/1] [=================73%        ] perfil_residente.nsys-rep[1/1] [=================74%        ] perfil_residente.nsys-rep[1/1] [==================75%       ] perfil_residente.nsys-rep[1/1] [========================100%] perfil_residente.nsys-rep[1/1] [========================100%] perfil_residente.nsys-rep
+Generated:
+    /home/marcosarpc/scratch/aps2/repo/resultados/perfil_residente.nsys-rep
+Generating SQLite file resultados/perfil_residente.sqlite from resultados/perfil_residente.nsys-rep
+Processing [resultados/perfil_residente.sqlite] with [/opt/ohpc/pub/spack/opt/spack/linux-skylake/cuda-12.8.1-hk7c4l6fpeucmtbivmr7kn73dnkarzyt/nsight-systems-2024.6.2/host-linux-x64/reports/cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls   Avg (ns)    Med (ns)  Min (ns)   Max (ns)   StdDev (ns)            Name         
+ --------  ---------------  ---------  -----------  --------  --------  ----------  ------------  ----------------------
+     55.6    3,734,145,386  2,150,094      1,736.7   1,327.0     1,171  27,695,950      89,215.3  cudaLaunchKernel      
+     43.3    2,910,118,942    393,547      7,394.6   5,815.0       993  19,888,715      39,389.4  cudaMemcpy            
+      1.1       71,267,687         21  3,393,699.4   1,413.0       981  71,231,724  15,543,644.2  cudaMalloc            
+      0.0          150,095         22      6,822.5   1,253.5       421     109,785      23,075.8  cudaFree              
+      0.0            1,015          1      1,015.0   1,015.0     1,015       1,015           0.0  cuModuleGetLoadingMode
+
+Processing [resultados/perfil_residente.sqlite] with [/opt/ohpc/pub/spack/opt/spack/linux-skylake/cuda-12.8.1-hk7c4l6fpeucmtbivmr7kn73dnkarzyt/nsight-systems-2024.6.2/host-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     42.2    1,267,198,022    590,310   2,146.7   1,632.0     1,151     4,832      1,064.7  Barenn::forward_kernel(const float *, const float *, const float *, int, int, bool, float *, float …
+     22.9      686,349,930    584,919   1,173.4   1,184.0     1,119     1,632         56.9  Barenn::update_kernel(const float *, const float *, int, int, float, float *, float *)              
+     18.5      555,502,758    584,919     949.7     960.0       896     1,408         42.6  Barenn::delta_kernel(const float *, const float *, int, bool, float *)                              
+     16.4      490,712,033    389,946   1,258.4   1,280.0     1,183     1,952         80.0  Barenn::grad_in_kernel(const float *, const float *, int, int, float *)                             
+
+Processing [resultados/perfil_residente.sqlite] with [/opt/ohpc/pub/spack/opt/spack/linux-skylake/cuda-12.8.1-hk7c4l6fpeucmtbivmr7kn73dnkarzyt/nsight-systems-2024.6.2/host-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+
+ ** CUDA GPU MemOps Summary (by Time) (cuda_gpu_mem_time_sum):
+
+ Time (%)  Total Time (ns)   Count   Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)           Operation          
+ --------  ---------------  -------  --------  --------  --------  --------  -----------  ----------------------------
+     55.0      154,403,904  196,770     784.7     768.0       416     4,416         43.1  [CUDA memcpy Device-to-Host]
+     45.0      126,534,015  196,777     643.0     640.0       287    79,390        184.7  [CUDA memcpy Host-to-Device]
+
+Processing [resultados/perfil_residente.sqlite] with [/opt/ohpc/pub/spack/opt/spack/linux-skylake/cuda-12.8.1-hk7c4l6fpeucmtbivmr7kn73dnkarzyt/nsight-systems-2024.6.2/host-linux-x64/reports/cuda_gpu_mem_size_sum.py]... 
+
+ ** CUDA GPU MemOps Summary (by Size) (cuda_gpu_mem_size_sum):
+
+ Total (MB)   Count   Avg (MB)  Med (MB)  Min (MB)  Max (MB)  StdDev (MB)           Operation          
+ ----------  -------  --------  --------  --------  --------  -----------  ----------------------------
+      9.249  196,777     0.000     0.000     0.000     0.979        0.002  [CUDA memcpy Host-to-Device]
+      7.871  196,770     0.000     0.000     0.000     0.000        0.000  [CUDA memcpy Device-to-Host]
+
