@@ -1,0 +1,8 @@
+Evidencias do bloco v1.2-cuda-shared (Issue #11)
+
+bench_gpu_shared.txt  job 30338 (compute22, RTX A1000): saida completa, diferencas para o
+                      legado e 10 repeticoes (slurm/gpu.slurm)
+ablacao_shared.txt    job 30337 (compute22): gpu x gpu_sem_padding x gpu_pesos_global,
+                      validacao e 10 rodadas intercaladas (slurm/gpu_ablacao.slurm)
+nsys_resumo.txt       job 30339 (compute23): Nsight Systems do treino completo
+                      (slurm/nsys.slurm perfil_shared)

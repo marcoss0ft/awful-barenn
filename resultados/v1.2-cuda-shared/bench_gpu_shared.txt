@@ -1,0 +1,71 @@
+compute22
+Model name:                           Intel(R) Core(TM) i9-14900
+NVIDIA RTX A1000, 570.124.06
+== Saida completa de ./gpu ==
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0156
+Epoca 46/51 | perda media 0.0144
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 0.3937 s
+
+AVALIACAO FINAL
+Acuracia 95.6% | 1718 acertos em 1797 imagens
+Perda media 0.0438
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            8
+       3         2            6
+       8         1            6
+Tempo de leitura 0.0203 s
+Tempo de avaliacao 0.0279 s
+== Diferencas para o legado (linhas de tempo ignoradas) ==
+10,11c10,11
+< Epoca 41/51 | perda media 0.0155
+< Epoca 46/51 | perda media 0.0145
+---
+> Epoca 41/51 | perda media 0.0156
+> Epoca 46/51 | perda media 0.0144
+15,16c15,16
+< Acuracia 95.5% | 1717 acertos em 1797 imagens
+< Perda media 0.0432
+---
+> Acuracia 95.6% | 1718 acertos em 1797 imagens
+> Perda media 0.0438
+29c29,30
+<        7         9            9
+---
+>        7         9            8
+>        3         2            6
+31d31
+<        3         2            5
+== Benchmark de ./gpu ==
+Binario: ./gpu | repeticoes: 10 | host: compute22
+rodada 1 | treino 0.4155 s | total 2.6265 s
+rodada 2 | treino 0.3920 s | total 2.5259 s
+rodada 3 | treino 0.3924 s | total 2.5201 s
+rodada 4 | treino 0.3921 s | total 2.5228 s
+rodada 5 | treino 0.3922 s | total 2.5254 s
+rodada 6 | treino 0.3920 s | total 2.5279 s
+rodada 7 | treino 0.3922 s | total 2.5255 s
+rodada 8 | treino 0.3927 s | total 2.5137 s
+rodada 9 | treino 0.3928 s | total 2.5181 s
+rodada 10 | treino 0.3919 s | total 2.5275 s
+MEDIA treino 0.3946 s (desvio 0.0074) | total 2.5333 s (desvio 0.0331)
