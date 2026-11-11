@@ -1,0 +1,8 @@
+Evidencias do bloco v0.2-cpu-openmp (Issue #5)
+
+omp_intercalado.txt   job 30326 (compute22): v0.1, cpu com 1 thread, 8 threads e 8 threads
+                      com OMP_PROC_BIND=close/OMP_PLACES=cores, intercalados, 10 rodadas.
+                      Comparacao principal do bloco (slurm/omp_intercalado.slurm).
+escala_threads.txt    job 30323 (compute20): cpu com 1/2/4/8 threads (tempos de treino,
+                      leitura e avaliacao de cada execucao) e o experimento
+                      experimentos/omp_no_treino.cpp com 1/2/4/8 threads (slurm/escala_cpu.slurm).

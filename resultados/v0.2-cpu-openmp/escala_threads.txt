@@ -1,0 +1,1 @@
+cat: resultados/escala_30323.out: No such file or directory
