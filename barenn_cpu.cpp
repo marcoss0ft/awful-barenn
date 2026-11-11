@@ -25,8 +25,9 @@ class DenseLayer {
     int in_features;
     int out_features;
     bool final;
-    // weights[i][j] liga a entrada j ao neurônio de saída i.
-    vector<vector<float>> weights;
+    // Matriz de pesos achatada em um único vetor contíguo (linha por neurônio):
+    // weights[i * in_features + j] liga a entrada j ao neurônio de saída i.
+    vector<float> weights;
     vector<float> bias;
     // Dados do último forward usados para calcular os gradientes.
     vector<float> last_input;
@@ -35,14 +36,13 @@ class DenseLayer {
 public:
     DenseLayer(int input_size, int output_size, bool is_final = false)
         : in_features(input_size), out_features(output_size), final(is_final),
-          weights(output_size, vector<float>(input_size)), bias(output_size, 0) {
+          weights(output_size * input_size), bias(output_size, 0) {
         // A semente fixa torna a inicialização de cada camada reproduzível.
         mt19937 gen(1337);
         uniform_real_distribution<float> distribution(-0.05f, 0.05f);
-        for (auto& row : weights) {
-            for (float& weight : row) {
-                weight = distribution(gen);
-            }
+        // A ordem de sorteio é a mesma do código legado (linha por linha).
+        for (float& weight : weights) {
+            weight = distribution(gen);
         }
     }
 
@@ -54,7 +54,7 @@ public:
         for (int i = 0; i < out_features; ++i) {
             float sum = bias[i];
             for (int j = 0; j < in_features; ++j) {
-                sum += input[j] * weights[i][j];
+                sum += input[j] * weights[i * in_features + j];
             }
             last_z[i] = sum;
             // As camadas ocultas usam ReLU. A última devolve escores lineares.
@@ -77,7 +77,7 @@ public:
         for (int i = 0; i < in_features; ++i) {
             float sum = 0;
             for (int j = 0; j < out_features; ++j) {
-                sum += delta[j] * weights[j][i];
+                sum += delta[j] * weights[j * in_features + i];
             }
             grad_in[i] = sum;
         }
@@ -86,7 +86,7 @@ public:
         // O gradiente do viés é o próprio delta.
         for (int i = 0; i < out_features; ++i) {
             for (int j = 0; j < in_features; ++j) {
-                weights[i][j] -= learning_rate * (delta[i] * last_input[j]);
+                weights[i * in_features + j] -= learning_rate * (delta[i] * last_input[j]);
             }
             bias[i] -= learning_rate * delta[i];
         }
