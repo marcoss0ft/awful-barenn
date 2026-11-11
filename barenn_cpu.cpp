@@ -113,42 +113,58 @@ struct Amostra {
     int rotulo;
 };
 
+// Converte uma linha do arquivo em uma amostra. Devolve false se for inválida.
+bool ler_linha(const string& linha, Amostra& amostra) {
+    istringstream campos(linha);
+    // Cada atributo deve ser seguido por vírgula, inclusive o último.
+    for (int i = 0; i < entradas; ++i) {
+        float valor;
+        char separador;
+        if (!(campos >> valor >> separador) || separador != ',' ||
+            !isfinite(valor) || valor < 0 || valor > 16) {
+            break;
+        }
+        // Converte os valores de [0, 16] para [0, 1].
+        amostra.imagem.push_back(valor / 16.0f);
+    }
+    // Depois dos atributos, deve restar apenas o rótulo de 0 a 9.
+    return amostra.imagem.size() == entradas &&
+           (campos >> amostra.rotulo) &&
+           amostra.rotulo >= 0 && amostra.rotulo < classes &&
+           (campos >> ws).eof();
+}
+
 vector<Amostra> ler_dados(const string& caminho) {
     ifstream arquivo(caminho);
     if (!arquivo) {
         throw runtime_error("Não foi possível abrir " + caminho);
     }
 
-    vector<Amostra> dados;
+    // 1) Leitura sequencial das linhas: o arquivo é lido em ordem.
+    vector<string> linhas;
     string linha;
-    size_t numero_linha = 0;
     while (getline(arquivo, linha)) {
-        ++numero_linha;
-        istringstream campos(linha);
-        Amostra amostra{};
-        // Cada atributo deve ser seguido por vírgula, inclusive o último.
-        for (int i = 0; i < entradas; ++i) {
-            float valor;
-            char separador;
-            if (!(campos >> valor >> separador) || separador != ',' ||
-                !isfinite(valor) || valor < 0 || valor > 16) {
-                break;
-            }
-            // Converte os valores de [0, 16] para [0, 1].
-            amostra.imagem.push_back(valor / 16.0f);
-        }
-        // Depois dos atributos, deve restar apenas o rótulo de 0 a 9.
-        if (amostra.imagem.size() != entradas ||
-            !(campos >> amostra.rotulo) ||
-            amostra.rotulo < 0 || amostra.rotulo >= classes ||
-            !(campos >> ws).eof()) {
-            throw runtime_error(caminho + ":" + to_string(numero_linha) +
-                " — esperados 64 atributos de 0 a 16 e um rótulo inteiro de 0 a 9");
-        }
-        dados.push_back(move(amostra));
+        linhas.push_back(linha);
     }
-    if (arquivo.bad() || dados.empty()) {
+    if (arquivo.bad() || linhas.empty()) {
         throw runtime_error("Falha de leitura ou arquivo vazio: " + caminho);
+    }
+
+    // 2) Conversão texto -> números em paralelo: cada linha é independente e
+    //    cada thread escreve só na sua posição de "dados".
+    const int n = static_cast<int>(linhas.size());
+    vector<Amostra> dados(n);
+    int primeira_invalida = n;
+    #pragma omp parallel for
+    for (int i = 0; i < n; ++i) {
+        if (!ler_linha(linhas[i], dados[i])) {
+            #pragma omp critical
+            primeira_invalida = min(primeira_invalida, i);
+        }
+    }
+    if (primeira_invalida < n) {
+        throw runtime_error(caminho + ":" + to_string(primeira_invalida + 1) +
+            " — esperados 64 atributos de 0 a 16 e um rótulo inteiro de 0 a 9");
     }
     return dados;
 }
