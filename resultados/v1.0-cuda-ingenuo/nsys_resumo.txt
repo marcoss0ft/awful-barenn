@@ -1,0 +1,47 @@
+Collecting data...
+Generating '/tmp/nsys-report-df82.qdstrm'
+[1/1] [0%                          ] perfil_ingenuo.nsys-rep[1/1] [0%                          ] perfil_ingenuo.nsys-rep[1/1] [=15%                        ] perfil_ingenuo.nsys-rep[1/1] [13%                         ] perfil_ingenuo.nsys-rep[1/1] [11%                         ] perfil_ingenuo.nsys-rep[1/1] [10%                         ] perfil_ingenuo.nsys-rep[1/1] [9%                          ] perfil_ingenuo.nsys-rep[1/1] [8%                          ] perfil_ingenuo.nsys-rep[1/1] [7%                          ] perfil_ingenuo.nsys-rep[1/1] [6%                          ] perfil_ingenuo.nsys-rep[1/1] [5%                          ] perfil_ingenuo.nsys-rep[1/1] [0%                          ] perfil_ingenuo.nsys-rep[1/1] [5%                          ] perfil_ingenuo.nsys-rep[1/1] [6%                          ] perfil_ingenuo.nsys-rep[1/1] [7%                          ] perfil_ingenuo.nsys-rep[1/1] [8%                          ] perfil_ingenuo.nsys-rep[1/1] [9%                          ] perfil_ingenuo.nsys-rep[1/1] [10%                         ] perfil_ingenuo.nsys-rep[1/1] [11%                         ] perfil_ingenuo.nsys-rep[1/1] [12%                         ] perfil_ingenuo.nsys-rep[1/1] [13%                         ] perfil_ingenuo.nsys-rep[1/1] [14%                         ] perfil_ingenuo.nsys-rep[1/1] [=15%                        ] perfil_ingenuo.nsys-rep[1/1] [=16%                        ] perfil_ingenuo.nsys-rep[1/1] [=17%                        ] perfil_ingenuo.nsys-rep[1/1] [==18%                       ] perfil_ingenuo.nsys-rep[1/1] [==19%                       ] perfil_ingenuo.nsys-rep[1/1] [==20%                       ] perfil_ingenuo.nsys-rep[1/1] [==21%                       ] perfil_ingenuo.nsys-rep[1/1] [===22%                      ] perfil_ingenuo.nsys-rep[1/1] [===23%                      ] perfil_ingenuo.nsys-rep[1/1] [===24%                      ] perfil_ingenuo.nsys-rep[1/1] [====25%                     ] perfil_ingenuo.nsys-rep[1/1] [====26%                     ] perfil_ingenuo.nsys-rep[1/1] [====27%                     ] perfil_ingenuo.nsys-rep[1/1] [====28%                     ] perfil_ingenuo.nsys-rep[1/1] [=====29%                    ] perfil_ingenuo.nsys-rep[1/1] [=====30%                    ] perfil_ingenuo.nsys-rep[1/1] [=====31%                    ] perfil_ingenuo.nsys-rep[1/1] [=====32%                    ] perfil_ingenuo.nsys-rep[1/1] [======33%                   ] perfil_ingenuo.nsys-rep[1/1] [======34%                   ] perfil_ingenuo.nsys-rep[1/1] [======35%                   ] perfil_ingenuo.nsys-rep[1/1] [=======36%                  ] perfil_ingenuo.nsys-rep[1/1] [=======37%                  ] perfil_ingenuo.nsys-rep[1/1] [=======38%                  ] perfil_ingenuo.nsys-rep[1/1] [=======39%                  ] perfil_ingenuo.nsys-rep[1/1] [========40%                 ] perfil_ingenuo.nsys-rep[1/1] [========41%                 ] perfil_ingenuo.nsys-rep[1/1] [========42%                 ] perfil_ingenuo.nsys-rep[1/1] [=========43%                ] perfil_ingenuo.nsys-rep[1/1] [=========44%                ] perfil_ingenuo.nsys-rep[1/1] [=========45%                ] perfil_ingenuo.nsys-rep[1/1] [=========46%                ] perfil_ingenuo.nsys-rep[1/1] [==========47%               ] perfil_ingenuo.nsys-rep[1/1] [==========48%               ] perfil_ingenuo.nsys-rep[1/1] [==========49%               ] perfil_ingenuo.nsys-rep[1/1] [===========50%              ] perfil_ingenuo.nsys-rep[1/1] [===========51%              ] perfil_ingenuo.nsys-rep[1/1] [===========52%              ] perfil_ingenuo.nsys-rep[1/1] [===========53%              ] perfil_ingenuo.nsys-rep[1/1] [============54%             ] perfil_ingenuo.nsys-rep[1/1] [============55%             ] perfil_ingenuo.nsys-rep[1/1] [============56%             ] perfil_ingenuo.nsys-rep[1/1] [============57%             ] perfil_ingenuo.nsys-rep[1/1] [=============58%            ] perfil_ingenuo.nsys-rep[1/1] [=============59%            ] perfil_ingenuo.nsys-rep[1/1] [=============60%            ] perfil_ingenuo.nsys-rep[1/1] [==============61%           ] perfil_ingenuo.nsys-rep[1/1] [==============62%           ] perfil_ingenuo.nsys-rep[1/1] [==============63%           ] perfil_ingenuo.nsys-rep[1/1] [==============64%           ] perfil_ingenuo.nsys-rep[1/1] [===============65%          ] perfil_ingenuo.nsys-rep[1/1] [===============66%          ] perfil_ingenuo.nsys-rep[1/1] [===============67%          ] perfil_ingenuo.nsys-rep[1/1] [================68%         ] perfil_ingenuo.nsys-rep[1/1] [================69%         ] perfil_ingenuo.nsys-rep[1/1] [================70%         ] perfil_ingenuo.nsys-rep[1/1] [================71%         ] perfil_ingenuo.nsys-rep[1/1] [=================72%        ] perfil_ingenuo.nsys-rep[1/1] [========================100%] perfil_ingenuo.nsys-rep[1/1] [========================100%] perfil_ingenuo.nsys-rep
+Generated:
+    /home/marcosarpc/scratch/aps2/repo/resultados/perfil_ingenuo.nsys-rep
+Generating SQLite file resultados/perfil_ingenuo.sqlite from resultados/perfil_ingenuo.nsys-rep
+Processing [resultados/perfil_ingenuo.sqlite] with [/opt/ohpc/pub/spack/opt/spack/linux-skylake/cuda-12.8.1-hk7c4l6fpeucmtbivmr7kn73dnkarzyt/nsight-systems-2024.6.2/host-linux-x64/reports/cuda_api_sum.py]... 
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls  Avg (ns)  Med (ns)  Min (ns)   Max (ns)   StdDev (ns)           Name         
+ --------  ---------------  ---------  --------  --------  --------  ----------  -----------  ----------------------
+     49.7    4,643,003,680    467,316   9,935.5   1,092.0       715  11,885,378     57,520.5  cudaMalloc            
+     26.4    2,466,609,866    493,277   5,000.5   3,610.0     1,490  32,602,154     89,345.3  cudaMemcpy            
+     21.0    1,961,180,239    467,310   4,196.7     933.0       647  72,079,521    107,359.3  cudaFree              
+      2.8      262,524,494    142,791   1,838.5   1,806.0     1,394   7,209,071     20,485.5  cudaLaunchKernel      
+      0.0              956          1     956.0     956.0       956         956          0.0  cuModuleGetLoadingMode
+
+Processing [resultados/perfil_ingenuo.sqlite] with [/opt/ohpc/pub/spack/opt/spack/linux-skylake/cuda-12.8.1-hk7c4l6fpeucmtbivmr7kn73dnkarzyt/nsight-systems-2024.6.2/host-linux-x64/reports/cuda_gpu_kern_sum.py]... 
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)                                                  Name                                                
+ --------  ---------------  ---------  --------  --------  --------  --------  -----------  ----------------------------------------------------------------------------------------------------
+     39.8       79,718,786     38,943   2,047.1   1,696.0     1,215     4,480        839.6  Barenn::forward_kernel(const float *, const float *, const float *, int, int, bool, float *, float …
+     23.5       46,985,000     38,943   1,206.5   1,184.0     1,151     1,600         56.3  Barenn::update_kernel(const float *, const float *, int, int, float, float *, float *)              
+     19.9       39,912,153     38,943   1,024.9   1,024.0       991     1,344         40.8  Barenn::delta_kernel(const float *, const float *, int, bool, float *)                              
+     16.7       33,510,852     25,962   1,290.8   1,312.0     1,184     1,760         75.2  Barenn::grad_in_kernel(const float *, const float *, int, int, float *)                             
+
+Processing [resultados/perfil_ingenuo.sqlite] with [/opt/ohpc/pub/spack/opt/spack/linux-skylake/cuda-12.8.1-hk7c4l6fpeucmtbivmr7kn73dnkarzyt/nsight-systems-2024.6.2/host-linux-x64/reports/cuda_gpu_mem_time_sum.py]... 
+
+ ** CUDA GPU MemOps Summary (by Time) (cuda_gpu_mem_time_sum):
+
+ Time (%)  Total Time (ns)   Count   Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)           Operation          
+ --------  ---------------  -------  --------  --------  --------  --------  -----------  ----------------------------
+     55.8      150,709,851  181,732     829.3     800.0       448     3,008         93.5  [CUDA memcpy Device-to-Host]
+     44.2      119,602,952  311,544     383.9     320.0       287     1,024        106.8  [CUDA memcpy Host-to-Device]
+
+Processing [resultados/perfil_ingenuo.sqlite] with [/opt/ohpc/pub/spack/opt/spack/linux-skylake/cuda-12.8.1-hk7c4l6fpeucmtbivmr7kn73dnkarzyt/nsight-systems-2024.6.2/host-linux-x64/reports/cuda_gpu_mem_size_sum.py]... 
+
+ ** CUDA GPU MemOps Summary (by Size) (cuda_gpu_mem_size_sum):
+
+ Total (MB)   Count   Avg (MB)  Med (MB)  Min (MB)  Max (MB)  StdDev (MB)           Operation          
+ ----------  -------  --------  --------  --------  --------  -----------  ----------------------------
+    306.144  311,544     0.001     0.000     0.000     0.008        0.002  [CUDA memcpy Host-to-Device]
+    152.752  181,732     0.001     0.000     0.000     0.008        0.002  [CUDA memcpy Device-to-Host]
+

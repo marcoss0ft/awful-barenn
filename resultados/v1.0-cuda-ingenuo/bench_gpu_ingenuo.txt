@@ -1,0 +1,64 @@
+compute21
+Model name:                           Intel(R) Core(TM) i9-14900
+NVIDIA RTX A1000, 570.124.06
+== Saida completa de ./gpu ==
+TREINO | 3823 imagens
+Epoca  1/51 | perda media 0.4129
+Epoca  6/51 | perda media 0.0442
+Epoca 11/51 | perda media 0.0312
+Epoca 16/51 | perda media 0.0261
+Epoca 21/51 | perda media 0.0227
+Epoca 26/51 | perda media 0.0204
+Epoca 31/51 | perda media 0.0184
+Epoca 36/51 | perda media 0.0169
+Epoca 41/51 | perda media 0.0156
+Epoca 46/51 | perda media 0.0144
+Epoca 51/51 | perda media 0.0135
+Tempo de treino 120.2115 s
+
+AVALIACAO FINAL
+Acuracia 95.6% | 1718 acertos em 1797 imagens
+Perda media 0.0438
+
+ALGUMAS INFERENCIAS
+Esperado  Previsto
+       0         0
+       1         1
+       2         8
+       3         3
+       5         9
+       7         9
+
+CONFUSOES MAIS FREQUENTES
+Esperado  Previsto  Ocorrencias
+       7         9            8
+       3         2            6
+       8         1            6
+Tempo de leitura 0.0285 s
+Tempo de avaliacao 0.5091 s
+== Diferencas para o legado (linhas de tempo ignoradas) ==
+10,11c10,11
+< Epoca 41/51 | perda media 0.0155
+< Epoca 46/51 | perda media 0.0145
+---
+> Epoca 41/51 | perda media 0.0156
+> Epoca 46/51 | perda media 0.0144
+15,16c15,16
+< Acuracia 95.5% | 1717 acertos em 1797 imagens
+< Perda media 0.0432
+---
+> Acuracia 95.6% | 1718 acertos em 1797 imagens
+> Perda media 0.0438
+29c29,30
+<        7         9            9
+---
+>        7         9            8
+>        3         2            6
+31d31
+<        3         2            5
+== Benchmark de ./gpu ==
+Binario: ./gpu | repeticoes: 3 | host: compute21
+rodada 1 | treino 121.1513 s | total 123.9460 s
+rodada 2 | treino 120.2872 s | total 122.9750 s
+rodada 3 | treino 120.7049 s | total 123.4770 s
+MEDIA treino 120.7145 s (desvio 0.4321) | total 123.4660 s (desvio 0.4856)

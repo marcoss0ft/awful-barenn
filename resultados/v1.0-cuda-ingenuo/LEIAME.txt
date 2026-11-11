@@ -1,0 +1,8 @@
+Evidencias do bloco v1.0-cuda-ingenuo (Issue #7)
+
+bench_gpu_ingenuo.txt  job 30328 (compute21, RTX A1000): saida completa, diferencas para o
+                       legado e 3 repeticoes (slurm/gpu.slurm)
+nsys_resumo.txt        job 30329 (compute22): Nsight Systems, primeiros 10 s do treino
+                       (slurm/nsys.slurm perfil_ingenuo 10); resumo de API, kernels e copias
+fma_evidencia.txt      PTX da GPU com fma.rn.f32 x binario da CPU sem vfmadd
+ncu_permissao.txt      Nsight Compute bloqueado no Franky (ERR_NVGPUCTRPERM)
