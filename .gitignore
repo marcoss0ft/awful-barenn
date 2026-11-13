@@ -35,3 +35,4 @@ id_rsa*
 *.swp
 .DS_Store
 bin_tags/
+tags_teste/
