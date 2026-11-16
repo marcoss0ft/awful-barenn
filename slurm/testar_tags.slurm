@@ -31,7 +31,7 @@ for tag in v0.0-baseline v0.1-cpu-memoria v0.2-cpu-openmp v1.0-cuda-ingenuo \
         scripts/validar.sh ./legado ./$bin | grep -E "^[<>] (Epoca|Acuracia|Perda)|VALIDACAO"
     done
     reps=3
-    [ "$tag" = v1.0-cuda-ingenuo ] && reps=1
+    [ "$tag" = v1.0-cuda-ingenuo ] && reps=2   # ~2 min por execução; o bench.sh precisa de pelo menos 2
     echo "--- scripts/bench.sh ./$ultimo $reps"
     scripts/bench.sh ./$ultimo $reps | grep MEDIA
 done
