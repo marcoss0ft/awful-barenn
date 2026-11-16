@@ -17,9 +17,14 @@ legado: barenn.cpp
 cpu: barenn_cpu.cpp
 	$(CXX) $(CXXFLAGS) -fopenmp barenn_cpu.cpp -o cpu
 
-# Versão CUDA (no Franky: module load cuda/12.8.1)
+# Versão CUDA (no Franky: module load cuda/12.8.1). Sem contração de a*b+c em
+# FMA, a saída fica idêntica à do legado (Issues #7 e #20).
 gpu: barenn_gpu.cu
-	$(NVCC) $(NVCCFLAGS) barenn_gpu.cu -o gpu
+	$(NVCC) $(NVCCFLAGS) --fmad=false barenn_gpu.cu -o gpu
+
+# Controle: a mesma versão com FMA (padrão do nvcc). A saída difere na 4ª casa.
+gpu_fma: barenn_gpu.cu
+	$(NVCC) $(NVCCFLAGS) barenn_gpu.cu -o gpu_fma
 
 # Experimentos de controle do kernel com memória compartilhada
 gpu_sem_padding: experimentos/gpu_sem_padding.cu
@@ -27,11 +32,6 @@ gpu_sem_padding: experimentos/gpu_sem_padding.cu
 
 gpu_pesos_global: experimentos/gpu_pesos_global.cu
 	$(NVCC) $(NVCCFLAGS) experimentos/gpu_pesos_global.cu -o gpu_pesos_global
-
-# Controle de corretude: mesma versão CUDA sem contração de a*b+c em FMA.
-# A saída fica idêntica à do legado (Issue #7).
-gpu_sem_fma: barenn_gpu.cu
-	$(NVCC) $(NVCCFLAGS) --fmad=false barenn_gpu.cu -o gpu_sem_fma
 
 # Experimento (resultado negativo): OpenMP dentro do laço de treino
 omp_no_treino: experimentos/omp_no_treino.cpp
@@ -49,6 +49,6 @@ cpu_prof: barenn_cpu.cpp
 	$(CXX) $(CXXFLAGS) -fopenmp -g barenn_cpu.cpp -o cpu_prof
 
 clean:
-	rm -f legado legado_O0 legado_prof cpu cpu_prof omp_no_treino gpu gpu_sem_padding gpu_pesos_global gpu_sem_fma
+	rm -f legado legado_O0 legado_prof cpu cpu_prof omp_no_treino gpu gpu_fma gpu_sem_padding gpu_pesos_global
 
 .PHONY: all clean

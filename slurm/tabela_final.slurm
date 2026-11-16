@@ -8,10 +8,10 @@
 #SBATCH --mem=4G
 #SBATCH --time=00:45:00
 
-# Uso: module load cuda/12.8.1 && scripts/compilar_tags.sh   (no nó de login)
+# Uso: module load cuda/12.8.1 && make gpu && scripts/compilar_tags.sh   (no nó de login)
 #      sbatch slurm/tabela_final.slurm
-# Mede TODAS as versões (binários de cada tag) no mesmo job e no mesmo nó,
-# para a tabela consolidada do README.
+# Mede TODAS as versões (binários de cada tag e o ./gpu da árvore atual) no
+# mesmo job e no mesmo nó, para a tabela consolidada do README.
 module load cuda/12.8.1
 export LD_LIBRARY_PATH=/opt/ohpc/pub/compiler/gcc/14.2.0/lib64:$LD_LIBRARY_PATH
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
@@ -28,6 +28,8 @@ for v in v0.1-cpu-memoria v0.2-cpu-openmp v1.1-cuda-residente v1.2-cuda-shared; 
     echo "--- $v"
     $B/$v | grep -v Tempo | diff resultados/ref_legado.txt - && echo "identica ao legado"
 done
+echo "--- atual: ./gpu (--fmad=false)"
+./gpu | grep -v Tempo | diff resultados/ref_legado.txt - && echo "identica ao legado"
 
 for par in "v0.0-baseline 10" "v0.1-cpu-memoria 10" "v0.2-cpu-openmp 10" \
            "v1.1-cuda-residente 10" "v1.2-cuda-shared 10" "v1.0-cuda-ingenuo 3"; do
@@ -35,3 +37,5 @@ for par in "v0.0-baseline 10" "v0.1-cpu-memoria 10" "v0.2-cpu-openmp 10" \
     echo "================ $1 ================"
     scripts/bench.sh $B/$1 $2
 done
+echo "================ atual: ./gpu (--fmad=false) ================"
+scripts/bench.sh ./gpu 10

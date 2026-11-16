@@ -1,0 +1,8 @@
+Evidencias do bloco v1.4-validacao-final (Issue #20)
+
+tabela_final.txt      job 30358 (compute20): todas as tags e o ./gpu final (--fmad=false) no
+                      mesmo job, com validacao contra a v0.0-baseline e 10 repeticoes
+                      (3 para a v1.0). Fonte da tabela do README (slurm/tabela_final.slurm).
+tags_clone_limpo.txt  job 30360 (compute20): cada tag em checkout limpo, com chmod +x nos
+                      scripts, compilada e rodada com os scripts da propria tag
+                      (scripts/testar_tags.sh + slurm/testar_tags.slurm).

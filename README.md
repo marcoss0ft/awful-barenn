@@ -12,23 +12,24 @@ Cada degrau de desempenho é uma tag anotada ligada a uma Issue.
 
 ## Tabela consolidada
 
-Todas as versões foram compiladas **a partir das próprias tags** (`scripts/compilar_tags.sh`) e medidas **no mesmo job e no mesmo nó** (`slurm/tabela_final.slurm`, job 30340).
-- **Máquina:** Franky `compute22`, Intel Core i9-14900 (8 núcleos P alocados) + NVIDIA RTX A1000 (Ampere cc 8.6, 18 SMs).
-- **Compiladores:** `g++ -O3` (14.2.0) e `nvcc -O3` (CUDA 12.8.1).
-- **Repetições:** 10 por versão (3 para a CUDA inicial). Log em [`resultados/final/tabela_final.txt`](resultados/final/tabela_final.txt).
+Todas as versões foram compiladas **a partir das próprias tags** (`scripts/compilar_tags.sh`) e medidas **no mesmo job e no mesmo nó** (`slurm/tabela_final.slurm`, job 30358). A linha da `v1.4` é o `./gpu` da própria árvore.
+- **Máquina:** Franky `compute20`, Intel Core i9-14900 (8 núcleos P alocados) + NVIDIA RTX A1000 (Ampere cc 8.6, 18 SMs).
+- **Compiladores:** `g++ -O3` (14.2.0) e `nvcc -O3` (CUDA 12.8.1; `--fmad=false` na `v1.4`).
+- **Repetições:** 10 por versão (3 para a CUDA inicial). Log em [`resultados/v1.4-validacao-final/tabela_final.txt`](resultados/v1.4-validacao-final/tabela_final.txt).
 
 | Versão (tag) | Técnica principal | Treino (média ± desvio) | Speedup do treino vs legado | Processo completo | Saída |
 |---|---|---|---|---|---|
-| **Baseline legado** ([`v0.0-baseline`](https://github.com/marcoss0ft/awful-barenn/tree/v0.0-baseline)) | código original, `g++ -O3` | 0,3723 s ± 0,0013 | 1,00× | 0,4003 s | referência |
-| CPU: memória ([`v0.1-cpu-memoria`](https://github.com/marcoss0ft/awful-barenn/tree/v0.1-cpu-memoria)) | pesos contíguos, sem cópias/`malloc` por amostra, sem gradiente descartado | 0,2219 s ± 0,0022 | 1,68× | 0,2498 s | idêntica |
-| **CPU otimizada** ([`v0.2-cpu-openmp`](https://github.com/marcoss0ft/awful-barenn/tree/v0.2-cpu-openmp)) | + OpenMP (8 threads) na leitura e na avaliação | **0,2218 s ± 0,0021** | **1,68×** | **0,2319 s (1,73×)** | idêntica |
-| **CUDA inicial** ([`v1.0-cuda-ingenuo`](https://github.com/marcoss0ft/awful-barenn/tree/v1.0-cuda-ingenuo)) | kernels por camada, `cudaMalloc`/`cudaMemcpy` a cada chamada | 124,53 s ± 0,28 | 0,003× | 127,26 s | equivalente* |
-| CUDA residente ([`v1.1-cuda-residente`](https://github.com/marcoss0ft/awful-barenn/tree/v1.1-cuda-residente)) | dados e parâmetros residentes na GPU | 6,10 s ± 0,13 | 0,06× | 8,24 s | equivalente* |
-| **CUDA otimizado** ([`v1.2-cuda-shared`](https://github.com/marcoss0ft/awful-barenn/tree/v1.2-cuda-shared)) | 1 kernel por época, pesos em **memória compartilhada** com passo anti-conflito de banco | **0,3950 s ± 0,0079** | 0,94× | 2,55 s | equivalente* |
+| **Baseline legado** ([`v0.0-baseline`](https://github.com/marcoss0ft/awful-barenn/tree/v0.0-baseline)) | código original, `g++ -O3` | 0,3724 s ± 0,0031 | 1,00× | 0,3991 s | referência |
+| CPU: memória ([`v0.1-cpu-memoria`](https://github.com/marcoss0ft/awful-barenn/tree/v0.1-cpu-memoria)) | pesos contíguos, sem cópias/`malloc` por amostra, sem gradiente descartado | 0,2208 s ± 0,0006 | 1,69× | 0,2469 s | idêntica |
+| **CPU otimizada** ([`v0.2-cpu-openmp`](https://github.com/marcoss0ft/awful-barenn/tree/v0.2-cpu-openmp)) | + OpenMP (8 threads) na leitura e na avaliação | **0,2222 s ± 0,0017** | **1,68×** | **0,2317 s (1,72×)** | idêntica |
+| **CUDA inicial** ([`v1.0-cuda-ingenuo`](https://github.com/marcoss0ft/awful-barenn/tree/v1.0-cuda-ingenuo)) | kernels por camada, `cudaMalloc`/`cudaMemcpy` a cada chamada | 123,74 s ± 0,65 | 0,003× | 126,47 s | difere na 4ª casa* |
+| CUDA residente ([`v1.1-cuda-residente`](https://github.com/marcoss0ft/awful-barenn/tree/v1.1-cuda-residente)) | dados e parâmetros residentes na GPU | 5,80 s ± 0,23 | 0,06× | 7,95 s | difere na 4ª casa* |
+| **CUDA otimizado** ([`v1.2-cuda-shared`](https://github.com/marcoss0ft/awful-barenn/tree/v1.2-cuda-shared)) | 1 kernel por época, pesos em **memória compartilhada** com passo anti-conflito de banco | 0,3898 s ± 0,0012 | 0,96× | 2,55 s | difere na 4ª casa* |
+| **CUDA otimizado, entrega final** ([`v1.4-validacao-final`](https://github.com/marcoss0ft/awful-barenn/tree/v1.4-validacao-final)) | mesmo kernel da `v1.2`, compilado sem contração em FMA (`--fmad=false`) | **0,3964 s ± 0,0012** | 0,94× | 2,55 s | **idêntica** |
 
-\* Perdas iguais até a 3ª casa. Na 4ª casa diferem nas épocas 41/46 (0,0156/0,0144 contra 0,0155/0,0145), e a acurácia é 95,6% contra 95,5% (1 imagem). O PTX da GPU usa FMA (`fma.rn.f32`, um arredondamento) e o binário da CPU não (`mulss` + `addss`, dois arredondamentos). As três versões CUDA dão exatamente a mesma saída entre si. Compilando o mesmo `barenn_gpu.cu` com `nvcc --fmad=false` (`make gpu_sem_fma`), a saída fica **idêntica** à do legado, com treino de 0,402 s contra 0,395 s no mesmo job ([log](resultados/final/gpu_sem_fma.txt)). Detalhes na [Issue #7](https://github.com/marcoss0ft/awful-barenn/issues/7).
+\* As tags `v1.0` a `v1.2` compilam com FMA (padrão do `nvcc`): um arredondamento em `a*b + c`, contra dois na CPU. A perda difere na 4ª casa nas épocas 41/46 (0,0156/0,0144 contra 0,0155/0,0145) e a acurácia em 1 imagem (95,6% contra 95,5%). A `v1.4` compila com `--fmad=false` e a saída fica **idêntica** à do legado, ao custo de 1,7% no treino. Detalhes nas Issues [#7](https://github.com/marcoss0ft/awful-barenn/issues/7) e [#20](https://github.com/marcoss0ft/awful-barenn/issues/20).
 
-**Na GPU**, a evolução foi 124,5 s → 6,1 s → 0,40 s (**315×** da CUDA inicial para a otimizada). A ablação no mesmo kernel ([Issue #11](https://github.com/marcoss0ft/awful-barenn/issues/11)):
+**Na GPU**, a evolução foi 123,7 s → 5,8 s → 0,39 s (**317×** da CUDA inicial para a `v1.2`). A ablação no mesmo kernel ([Issue #11](https://github.com/marcoss0ft/awful-barenn/issues/11)):
 
 | Variante do kernel | Treino |
 |---|---|
@@ -39,8 +40,8 @@ Todas as versões foram compiladas **a partir das próprias tags** (`scripts/com
 ### Leitura dos resultados
 - **CPU.** O ganho veio de **eliminar trabalho**: o gradiente da camada 1 era calculado e descartado, e havia 13 alocações por amostra. Instruções −42% e leituras −56% (callgrind). Miss de cache ≈ 0% antes e depois, porque os pesos (11 KB) cabem no L1.
 - **Multicore.** O treino é serial, então o OpenMP só acelera leitura (4,7×) e avaliação, e o processo fica preso na **Lei de Amdahl** (p ≈ 11% → 1,11×). OpenMP dentro do treino fica de 2,3× a 40× **mais lento**.
-- **GPU.** Na versão ingênua a GPU ficava ociosa ≈ 95% do tempo (97% da API em `cudaMalloc`/`cudaMemcpy`/`cudaFree`; cópias de 0,9 KB a 0,19 GB/s num PCIe Gen4 ×16: latência, não banda). Manter os dados na GPU deu 20×. Um kernel por época com memória compartilhada deu mais 15×.
-- **Por que a GPU não vence a CPU.** O SGD por amostra deixa ≈ 32 threads úteis em 1 de 18 SMs (8,3% de um SM, 0,46% da GPU), numa cadeia serial de 64 FMAs por neurônio. O kernel roda a ≈ 5,9 GFLOP/s, ≈ 1% do pico de um SM: é limitado por **latência**. A GPU só compensaria com rede mais larga ou mini-batch, que muda o algoritmo.
+- **GPU.** Na versão ingênua a GPU ficava ociosa ≈ 95% do tempo (97% da API em `cudaMalloc`/`cudaMemcpy`/`cudaFree`; cópias de 0,9 KB a 0,19 GB/s num PCIe Gen4 ×16: latência, não banda). Manter os dados na GPU deu ≈ 21×. Um kernel por época com memória compartilhada deu mais ≈ 15×.
+- **Por que a GPU não vence a CPU.** O SGD por amostra deixa ≈ 32 threads úteis em 1 de 18 SMs (ocupação teórica, calculada: 8,3% de um SM e 0,46% da GPU; o `ncu` está bloqueado no Franky), numa cadeia serial de 64 FMAs por neurônio. O kernel roda a ≈ 5,9 GFLOP/s, ≈ 1% do pico de um SM: é limitado por **latência**. A GPU só compensaria com rede mais larga ou mini-batch, que muda o algoritmo.
 
 ## Índice dos blocos lógicos
 
@@ -53,6 +54,7 @@ Todas as versões foram compiladas **a partir das próprias tags** (`scripts/com
 | 4 | GPU: dados residentes na GPU | [#9](https://github.com/marcoss0ft/awful-barenn/issues/9) | [#10](https://github.com/marcoss0ft/awful-barenn/pull/10) | [`v1.1-cuda-residente`](https://github.com/marcoss0ft/awful-barenn/releases/tag/v1.1-cuda-residente) |
 | 5 | GPU: kernel por época + memória compartilhada | [#11](https://github.com/marcoss0ft/awful-barenn/issues/11) | [#12](https://github.com/marcoss0ft/awful-barenn/pull/12) | [`v1.2-cuda-shared`](https://github.com/marcoss0ft/awful-barenn/releases/tag/v1.2-cuda-shared) |
 | 6 | Relatório: tabela consolidada e este índice | [#13](https://github.com/marcoss0ft/awful-barenn/issues/13) | [#14](https://github.com/marcoss0ft/awful-barenn/pull/14) | [`v1.3-relatorio`](https://github.com/marcoss0ft/awful-barenn/releases/tag/v1.3-relatorio) |
+| 7 | Entrega final: GPU idêntica por padrão e tags testadas em clone limpo | [#20](https://github.com/marcoss0ft/awful-barenn/issues/20) | [#21](https://github.com/marcoss0ft/awful-barenn/pull/21) | [`v1.4-validacao-final`](https://github.com/marcoss0ft/awful-barenn/releases/tag/v1.4-validacao-final) |
 
 As evidências brutas de cada bloco (benchmarks, callgrind, Nsight Systems) estão em [`resultados/`](resultados/).
 
@@ -66,14 +68,15 @@ module load cuda/12.8.1
 make legado cpu gpu
 sbatch slurm/comparar.slurm 10 ./legado ./cpu ./gpu           # valida e mede no mesmo job
 scripts/compilar_tags.sh && sbatch slurm/tabela_final.slurm   # refaz a tabela acima
+scripts/testar_tags.sh && sbatch slurm/testar_tags.slurm      # testa cada tag em checkout limpo
 ```
 
-Uma tag específica: `git checkout <tag>`, depois `chmod +x scripts/*.sh` (até a `v1.3` os scripts foram versionados sem o bit de execução) e a seção "Como reproduzir" do PR daquela tag. Os alvos do Makefile crescem a cada bloco:
+Uma tag específica: `git checkout <tag>`, depois `chmod +x scripts/*.sh` (até a `v1.3` os scripts foram versionados sem o bit de execução; todas as tags foram testadas assim no job 30360, [log](resultados/v1.4-validacao-final/tags_clone_limpo.txt)) e a seção "Como reproduzir" do PR daquela tag. Os alvos do Makefile crescem a cada bloco:
 - `v0.0` só tem `legado`;
 - `v0.1` e `v0.2` adicionam `cpu`;
 - a partir de `v1.0`, também `gpu`.
 
-No Franky: compile no nó de login (os nós de computação não têm os headers da glibc nem `valgrind`). O Nsight Compute está bloqueado (`ERR_NVGPUCTRPERM`), então a ocupação foi calculada pela configuração de lançamento.
+No Franky: compile no nó de login (os nós de computação não têm os headers da glibc nem `valgrind`).
 
 ---
 

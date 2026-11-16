@@ -1,0 +1,75 @@
+compute20
+NVIDIA RTX A1000
+================ v0.0-baseline ================
+--- scripts/bench.sh ./legado 3
+MEDIA treino 0.3110 s (desvio 0.0048) | total 0.3406 s (desvio 0.0069)
+================ v0.1-cpu-memoria ================
+--- scripts/validar.sh ./legado ./cpu
+VALIDACAO OK: saida identica a ./legado (exceto linhas de tempo)
+--- scripts/bench.sh ./cpu 3
+MEDIA treino 0.2091 s (desvio 0.0216) | total 0.2342 s (desvio 0.0229)
+================ v0.2-cpu-openmp ================
+--- scripts/validar.sh ./legado ./cpu
+VALIDACAO OK: saida identica a ./legado (exceto linhas de tempo)
+--- scripts/bench.sh ./cpu 3
+MEDIA treino 0.2112 s (desvio 0.0196) | total 0.2200 s (desvio 0.0196)
+================ v1.0-cuda-ingenuo ================
+--- scripts/validar.sh ./legado ./cpu
+VALIDACAO OK: saida identica a ./legado (exceto linhas de tempo)
+--- scripts/validar.sh ./legado ./gpu
+< Epoca 41/51 | perda media 0.0155
+< Epoca 46/51 | perda media 0.0145
+> Epoca 41/51 | perda media 0.0156
+> Epoca 46/51 | perda media 0.0144
+< Acuracia 95.5% | 1717 acertos em 1797 imagens
+< Perda media 0.0432
+> Acuracia 95.6% | 1718 acertos em 1797 imagens
+> Perda media 0.0438
+VALIDACAO: saidas diferentes (diff acima)
+--- scripts/bench.sh ./gpu 2
+MEDIA treino 124.1465 s (desvio 0.5916) | total 126.8720 s (desvio 0.6067)
+================ v1.1-cuda-residente ================
+--- scripts/validar.sh ./legado ./cpu
+VALIDACAO OK: saida identica a ./legado (exceto linhas de tempo)
+--- scripts/validar.sh ./legado ./gpu
+< Epoca 41/51 | perda media 0.0155
+< Epoca 46/51 | perda media 0.0145
+> Epoca 41/51 | perda media 0.0156
+> Epoca 46/51 | perda media 0.0144
+< Acuracia 95.5% | 1717 acertos em 1797 imagens
+< Perda media 0.0432
+> Acuracia 95.6% | 1718 acertos em 1797 imagens
+> Perda media 0.0438
+VALIDACAO: saidas diferentes (diff acima)
+--- scripts/bench.sh ./gpu 3
+MEDIA treino 6.0060 s (desvio 0.1675) | total 8.1619 s (desvio 0.1781)
+================ v1.2-cuda-shared ================
+--- scripts/validar.sh ./legado ./cpu
+VALIDACAO OK: saida identica a ./legado (exceto linhas de tempo)
+--- scripts/validar.sh ./legado ./gpu
+< Epoca 41/51 | perda media 0.0155
+< Epoca 46/51 | perda media 0.0145
+> Epoca 41/51 | perda media 0.0156
+> Epoca 46/51 | perda media 0.0144
+< Acuracia 95.5% | 1717 acertos em 1797 imagens
+< Perda media 0.0432
+> Acuracia 95.6% | 1718 acertos em 1797 imagens
+> Perda media 0.0438
+VALIDACAO: saidas diferentes (diff acima)
+--- scripts/bench.sh ./gpu 3
+MEDIA treino 0.3900 s (desvio 0.0005) | total 2.5417 s (desvio 0.0063)
+================ v1.3-relatorio ================
+--- scripts/validar.sh ./legado ./cpu
+VALIDACAO OK: saida identica a ./legado (exceto linhas de tempo)
+--- scripts/validar.sh ./legado ./gpu
+< Epoca 41/51 | perda media 0.0155
+< Epoca 46/51 | perda media 0.0145
+> Epoca 41/51 | perda media 0.0156
+> Epoca 46/51 | perda media 0.0144
+< Acuracia 95.5% | 1717 acertos em 1797 imagens
+< Perda media 0.0432
+> Acuracia 95.6% | 1718 acertos em 1797 imagens
+> Perda media 0.0438
+VALIDACAO: saidas diferentes (diff acima)
+--- scripts/bench.sh ./gpu 3
+MEDIA treino 0.3898 s (desvio 0.0002) | total 2.5370 s (desvio 0.0013)
